@@ -1,6 +1,18 @@
 <template>
-  <q-page class="flex flex-center">
-    <img alt="Quasar logo" src="~assets/quasar-logo-full.svg">
+  <q-page class="q-pa-md">
+    <q-card v-bind:key="card.id" v-for="card in cards">
+      <q-card-title>{{ card.title }}</q-card-title>
+      <q-card-separator/>
+      <q-card-main>Card Content</q-card-main>
+      <q-card-separator/>
+      <q-card-actions>
+        <q-btn flat round dense icon="event"/>
+        <q-btn flat label="5:30PM"/>
+        <q-btn flat label="7:30PM"/>
+        <q-btn flat label="9:00PM"/>
+        <q-btn flat color="primary" label="Reserve"/>
+      </q-card-actions>
+    </q-card>
   </q-page>
 </template>
 
@@ -9,6 +21,12 @@
 
 <script>
 export default {
-  name: 'PageIndex',
+  name: 'IndexPage',
+  data: () => ({
+    cards: [{
+      title: 'XYZ',
+      id: 1,
+    }],
+  }),
 };
 </script>
