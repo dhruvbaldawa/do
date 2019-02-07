@@ -1,24 +1,12 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-layout-header>
-      <q-toolbar
-        color="primary"
-        :glossy="$q.theme === 'mat'"
-        :inverted="$q.theme === 'ios'"
-      >
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          aria-label="Menu"
-        >
+      <q-toolbar color="primary" :glossy="$q.theme === 'mat'" :inverted="$q.theme === 'ios'">
+        <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
           <q-icon name="menu" />
         </q-btn>
 
-        <q-toolbar-title>
-          Do
-        </q-toolbar-title>
+        <q-toolbar-title>Do</q-toolbar-title>
       </q-toolbar>
     </q-layout-header>
 
@@ -26,11 +14,7 @@
       v-model="leftDrawerOpen"
       :content-class="$q.theme === 'mat' ? 'bg-grey-2' : null"
     >
-      <q-list
-        no-border
-        link
-        inset-delimiter
-      >
+      <q-list no-border link inset-delimiter>
         <q-list-header>Essential Links</q-list-header>
         <q-item @click.native="openURL('http://quasar-framework.org')">
           <q-item-side icon="school" />
@@ -46,7 +30,7 @@
 </template>
 
 <script>
-import { openURL } from 'quasar';
+import {openURL} from 'quasar';
 
 export default {
   name: 'MyLayout',
@@ -61,5 +45,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
