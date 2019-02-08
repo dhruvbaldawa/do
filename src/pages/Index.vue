@@ -40,13 +40,12 @@ export default {
   computed: {
     ...mapGetters(['getOAuthToken']),
   },
-  mounted() {
+  async mounted() {
     // @TODO: think how to handle local storage, within the container or action
-    const store = this.$store;
-    this.$store.dispatch('login', getToken()).then(() => {
-      const service = new TodoistService(store.getters.oAuthToken);
-      service.getTasksByFilter('overdue | today').then(console.log);
-    });
+    await this.$store.dispatch('login', getToken());
+    const service = new TodoistService(this.$store.getters.oAuthToken);
+    const tasks = await service.getTasksByFilter('overdue | today');
+    console.log(tasks);
   },
 };
 </script>

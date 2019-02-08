@@ -37,20 +37,20 @@ const todoistModule = {
   },
 
   actions: {
-    login({ commit }, token) {
+    async login({ commit }, token) {
       const service = new TodoistService(token);
-      return new Promise((resolve, reject) => {
-        service.initialSync().then((response) => {
-          commit('setOAuthToken', token);
-          commit('setSyncToken', response.data.sync_token);
-          commit('setTodoistData', {
-            user: response.data.user,
-            projects: response.data.projects,
-            labels: response.data.labels,
-          });
-          resolve();
-        }).catch(reject);
-      });
+      try {
+        const response = await service.initialSync();
+        commit('setOAuthToken', token);
+        commit('setSyncToken', response.data.sync_token);
+        commit('setTodoistData', {
+          user: response.data.user,
+          projects: response.data.projects,
+          labels: response.data.labels,
+        });
+      } catch (err) {
+        Promise.reject(err);
+      }
     },
   },
 };
