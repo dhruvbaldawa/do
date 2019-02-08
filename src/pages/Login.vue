@@ -11,7 +11,6 @@
             v-model.trim="form.token"
             :error="form.error"
             :loading="form.loading"
-            error-label="bokokok"
             placeholder="Personal Token"
             autofocus
             @keyup.enter="submit"
@@ -56,8 +55,14 @@ export default {
         return;
       }
 
-      setToken(this.form.token);
-      this.$router.push('/');
+      this.$store.dispatch('login', this.form.token).then(() => {
+        setToken(this.form.token);
+        this.$router.push('/');
+      }).catch((error) => {
+        this.form.error = true;
+        this.form.loading = false;
+        this.form.error_label = error.message;
+      });
     },
   },
 };

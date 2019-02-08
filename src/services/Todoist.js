@@ -16,8 +16,7 @@ export default class TodoistService {
   }
 
   initialSync() {
-    this.sync_client
-      .post('/sync', qs.stringify({token: this.token, sync_token: '*', resource_types: '["labels", "projects", "user"]'}))
-      .then(console.log);
+    return this.sync_client
+      .post('/sync', qs.stringify({token: this.token, sync_token: '*', resource_types: '["labels", "projects", "user"]'}));
   }
 }
