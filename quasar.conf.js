@@ -44,6 +44,7 @@ module.exports = function(ctx) {
         'QCardMedia',
         'QCardSeparator',
         'QCardTitle',
+        'QChip',
         'QField',
         'QIcon',
         'QItem',

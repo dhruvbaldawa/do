@@ -4,6 +4,13 @@ import TodoistService from '../services/Todoist';
 
 // }
 
+const PRIORITY_COLOR = {
+  1: 'grey-4',
+  2: 'yellow-6',
+  3: 'amber-10',
+  4: 'red-14',
+};
+
 const todoistModule = {
   // the all great state
   state: {
@@ -20,6 +27,8 @@ const todoistModule = {
 
   getters: {
     oAuthToken: (state) => state.credentials.oAuthToken,
+
+    getPriorityColor: () => (priority) => PRIORITY_COLOR[priority],
   },
 
   mutations: {
