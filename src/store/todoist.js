@@ -19,7 +19,7 @@ const todoistModule = {
   },
 
   getters: {
-    getToken: (state) => state.credentials.oAuthToken,
+    oAuthToken: (state) => state.credentials.oAuthToken,
   },
 
   mutations: {

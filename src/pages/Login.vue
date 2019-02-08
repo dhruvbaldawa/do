@@ -55,14 +55,18 @@ export default {
         return;
       }
 
-      this.$store.dispatch('login', this.form.token).then(() => {
-        setToken(this.form.token);
-        this.$router.push('/');
-      }).catch((error) => {
-        this.form.error = true;
-        this.form.loading = false;
-        this.form.error_label = error.message;
-      });
+      this.$store
+        .dispatch('login', this.form.token)
+        .then(() => {
+          // @TODO: think how to handle local storage, within the container or action
+          setToken(this.form.token);
+          this.$router.push('/');
+        })
+        .catch((error) => {
+          this.form.error = true;
+          this.form.loading = false;
+          this.form.error_label = error.message;
+        });
     },
   },
 };
