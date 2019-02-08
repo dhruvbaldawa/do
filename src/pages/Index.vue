@@ -19,6 +19,9 @@
 <style></style>
 
 <script>
+import { getToken } from '../services/TokenAuth.js';
+import TodoistService from '../services/Todoist.js';
+
 export default {
   name: 'IndexPage',
   data: () => ({
@@ -33,5 +36,9 @@ export default {
       },
     ],
   }),
+  mounted: () => {
+    const service = new TodoistService(getToken());
+    service.initialSync();
+  },
 };
 </script>

@@ -4,6 +4,7 @@ function requireLogin(to, from, next) {
   if (!isLoggedIn()) {
     next('/login');
   }
+  next();
 }
 
 const routes = [

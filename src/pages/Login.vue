@@ -57,6 +57,7 @@ export default {
       }
 
       setToken(this.form.token);
+      this.$router.push('/');
     },
   },
 };
