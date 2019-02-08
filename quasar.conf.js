@@ -49,6 +49,7 @@ module.exports = function(ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemTile',
         'QInput',
         'QLayout',
         'QLayoutDrawer',
