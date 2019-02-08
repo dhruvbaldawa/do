@@ -59,7 +59,6 @@ export default {
         await this.$store.dispatch('login', this.form.token);
         setToken(this.form.token);
         this.$router.push('/');
-
       } catch (error) {
         this.form.error = true;
         this.form.loading = false;

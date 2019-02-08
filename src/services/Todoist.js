@@ -27,11 +27,13 @@ export default class TodoistService {
   }
 
   async getTasksByFilter(filter) {
-    this.rest_client
-      .get('/tasks', {params: { filter}})
-      .then((response) => {
-        Promise.resolve(response.data);
-      })
-      .catch(Promise.reject);
+    return new Promise((resolve, reject) => {
+      this.rest_client
+        .get('/tasks', {params: { filter }})
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch(reject);
+    });
   }
 }
