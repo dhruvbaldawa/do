@@ -1,8 +1,5 @@
 import TodoistService from '../services/Todoist';
-
-// const types = {
-
-// }
+import { uid } from 'quasar';
 
 const PRIORITY_COLORS = {
   1: 'grey-4',
@@ -106,6 +103,31 @@ const todoistModule = {
           projects: response.data.projects,
           labels: response.data.labels,
         });
+      } catch (err) {
+        Promise.reject(err);
+      }
+    },
+
+    async updateItemDate({ commit }, id, dueDateUtc, dateString = null) {
+      const service = new TodoistService(this.getters.oAuthToken);
+      const commandUuid = uid();
+      const command = {
+        type: 'item_update',
+        args: {
+          id,
+          due_date_utc: dueDateUtc,
+          date_string: dateString,
+        },
+        uuid: commandUuid,
+      };
+
+      try {
+        const response = await service.doSync([command]);
+        commit('setSyncToken', response.data.sync_token);
+
+        if (response.data.sync_status[commandUuid] !== 'ok') {
+          Promise.reject(response.data.sync_status[commandUuid]);
+        }
       } catch (err) {
         Promise.reject(err);
       }

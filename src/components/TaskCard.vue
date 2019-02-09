@@ -31,14 +31,26 @@
           <q-item-tile>{{ task.due.string }}</q-item-tile>
         </q-item-main>
       </q-item>
+      <q-item>
+        <q-item-side>
+          <q-item-tile color="primary" icon="event"/>
+        </q-item-side>
+        <q-item-main>
+          <q-btn outline label="10 am" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="12 pm" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="02 pm" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="04 pm" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="06 pm" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="08 pm" color="primary" class="q-mx-xs"/>
+          <q-btn outline label="10 pm" color="primary" class="q-mx-xs"/>
+        </q-item-main>
+      </q-item>
     </q-list>
     <q-card-separator/>
     <q-card-actions>
-      <q-btn flat round dense icon="event"/>
-      <q-btn flat label="5:30PM"/>
-      <q-btn flat label="7:30PM"/>
-      <q-btn flat label="9:00PM"/>
-      <q-btn flat color="primary" label="Reserve"/>
+      <q-btn flat label="Done"/>
+      <q-btn flat label="Postpone"/>
+      <q-btn flat label="Shelf"/>
     </q-card-actions>
   </q-card>
 </template>
