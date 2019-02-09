@@ -1,4 +1,5 @@
 // Configuration for your app
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = function(ctx) {
   return {
@@ -27,6 +28,7 @@ module.exports = function(ctx) {
           loader: 'eslint-loader',
           exclude: /node_modules/,
         });
+        cfg.plugins.push(new MomentLocalesPlugin());
       },
     },
     devServer: {

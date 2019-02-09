@@ -1,15 +1,15 @@
 <template>
   <q-card class="q-ma-md">
-    <q-card-media style="height:150px" :class="priorityBackground">
-      <q-card-title slot="overlay" class="flex flex-top">
-        {{ task.content }}
-        <span slot="subtitle">{{ projectName }}</span>
-      </q-card-title>
-    </q-card-media>
+    <q-card-title class="flex flex-top bg-dark text-white">
+      <q-icon name="flag" :color="priorityColor" size="1.5em"/>
+      {{ task.content }}
+      <span slot="subtitle" class="text-white">{{ projectName }}</span>
+      <q-chip icon="watch_later" color="deep-orange">{{ dueDate }}</q-chip>
+    </q-card-title>
     <q-list>
       <q-item v-if="labels.length">
         <q-item-side>
-          <q-item-tile color="primary" icon="flag"/>
+          <q-item-tile color="primary" icon="bookmarks"/>
         </q-item-side>
         <q-item-main>
           <q-item-tile>
@@ -19,9 +19,7 @@
               :key="label.id"
               :color="label.color"
               style="mix-blend-mode: difference;"
-            >
-              {{ label.name }}
-            </q-chip>
+            >{{ label.name }}</q-chip>
           </q-item-tile>
         </q-item-main>
       </q-item>
@@ -47,6 +45,7 @@
 
 <script>
 import {mapGetters} from 'vuex';
+import moment from 'moment';
 
 export default {
   name: 'TaskCard',
@@ -54,8 +53,12 @@ export default {
     task: Object,
   },
   computed: {
-    priorityBackground() { return `bg-${this.getPriorityColor()(this.task.priority)}`; },
-    projectName() { return this.getProjectById()(this.task.project_id).name; },
+    priorityColor() {
+      return `${this.getPriorityColor()(this.task.priority)}`;
+    },
+    projectName() {
+      return this.getProjectById()(this.task.project_id).name;
+    },
     labels() {
       return this.task.label_ids.map((labelId) => {
         const label = this.getLabelById()(labelId);
@@ -64,6 +67,17 @@ export default {
           name: label.name,
           color: `todoist-label-${label.color}`,
         };
+      });
+    },
+    dueDate() {
+      const datetime = this.task.due.datetime || this.task.due.date;
+      return moment(datetime).calendar(null, {
+        sameDay: '[Today at] LT',
+        nextDay: '[Tomorrow at] LT',
+        nextWeek: 'dddd [at] LT',
+        lastDay: '[Yesterday at] LT',
+        lastWeek: '[Last] dddd [at] LT',
+        sameElse: 'Do MMMM, YYYY [at] LT',
       });
     },
   },
