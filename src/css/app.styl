@@ -1,1 +1,51 @@
-// app global css
+// Todoist styles
+
+// @TODO: same thing could have been achieved by using a array
+$todoist-labels = {
+  'todoist-label-0': #019412
+  'todoist-label-1': #A39D01
+  'todoist-label-2': #E73D02
+  'todoist-label-3': #E702A4
+  'todoist-label-4': #9902E7
+  'todoist-label-5': #1D02E7
+  'todoist-label-6': #0082C5
+  'todoist-label-7': #555555
+  'todoist-label-8': #008299
+  'todoist-label-9': #03B3B2
+  'todoist-label-10': #AC193D
+  'todoist-label-11': #82BA00
+  'todoist-label-12': #111111
+}
+
+for name, color in $todoist-labels
+  .bg-{name}
+    background: color !important;
+
+$todoist-projects = {
+  'todoist-project-0': #95EF63
+  'todoist-project-1': #FF8581
+  'todoist-project-2': #FFC471
+  'todoist-project-3': #F9EC75
+  'todoist-project-4': #A8C8E4
+  'todoist-project-5': #D2B8A3
+  'todoist-project-6': #E2A8E4
+  'todoist-project-7': #CCCCCC
+  'todoist-project-8': #FB886E
+  'todoist-project-9': #FFCC00
+  'todoist-project-10': #74E8D3
+  'todoist-project-11': #3BD5FB
+  'todoist-project-12': #DC4FAD
+  'todoist-project-13': #AC193D
+  'todoist-project-14': #D24726
+  'todoist-project-15': #82BA00
+  'todoist-project-16': #03B3B2
+  'todoist-project-17': #008299
+  'todoist-project-18': #5DB2FF
+  'todoist-project-19': #0072C6
+  'todoist-project-20': #000000
+  'todoist-project-21': #777777
+}
+
+for name, color in $todoist-projects
+  .bg-{name}
+    background: color !important;

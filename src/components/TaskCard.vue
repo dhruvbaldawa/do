@@ -1,20 +1,26 @@
 <template>
   <q-card class="q-ma-md">
-    <q-card-media style="height:150px" :class="getPriorityBackground">
+    <q-card-media style="height:150px" :class="priorityBackground">
       <q-card-title slot="overlay" class="flex flex-top">
         {{ task.content }}
-        <span slot="subtitle">{{ task.project_id }}</span>
+        <span slot="subtitle">{{ projectName }}</span>
       </q-card-title>
     </q-card-media>
     <q-list>
-      <q-item>
+      <q-item v-if="labels.length">
         <q-item-side>
           <q-item-tile color="primary" icon="flag"/>
         </q-item-side>
         <q-item-main>
           <q-item-tile>
-            <q-chip tag="true" v-for="label_id in task.label_ids" :key="label_id">
-              {{ label_id }}
+            <q-chip
+              tag
+              v-for="label in labels"
+              :key="label.id"
+              :color="label.color"
+              style="mix-blend-mode: difference;"
+            >
+              {{ label.name }}
             </q-chip>
           </q-item-tile>
         </q-item-main>
@@ -48,10 +54,21 @@ export default {
     task: Object,
   },
   computed: {
-    getPriorityBackground() { return `bg-${this.getPriorityColor()(this.task.priority)}`; },
+    priorityBackground() { return `bg-${this.getPriorityColor()(this.task.priority)}`; },
+    projectName() { return this.getProjectById()(this.task.project_id).name; },
+    labels() {
+      return this.task.label_ids.map((labelId) => {
+        const label = this.getLabelById()(labelId);
+        return {
+          id: label.id,
+          name: label.name,
+          color: `todoist-label-${label.color}`,
+        };
+      });
+    },
   },
   methods: {
-    ...mapGetters(['getPriorityColor']),
+    ...mapGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
   },
 };
 </script>

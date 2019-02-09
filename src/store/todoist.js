@@ -4,12 +4,53 @@ import TodoistService from '../services/Todoist';
 
 // }
 
-const PRIORITY_COLOR = {
+const PRIORITY_COLORS = {
   1: 'grey-4',
   2: 'yellow-6',
   3: 'amber-10',
   4: 'red-14',
 };
+
+const LABEL_COLORS = [
+  '#019412',
+  '#a39d01',
+  '#e73d02',
+  '#e702a4',
+  '#9902e7',
+  '#1d02e7',
+  '#0082c5',
+  '#555555',
+  '#008299',
+  '#03b3b2',
+  '#ac193d',
+  '#82ba00',
+  '#111111',
+];
+
+const PROJECT_COLORS = [
+  '#95ef63',
+  '#ff8581',
+  '#ffc471',
+  '#f9ec75',
+  '#a8c8e4',
+  '#d2b8a3',
+  '#e2a8e4',
+  '#cccccc',
+  '#fb886e',
+  '#ffcc00',
+  '#74e8d3',
+  '#3bd5fb',
+  '#dc4fad',
+  '#ac193d',
+  '#d24726',
+  '#82ba00',
+  '#03b3b2',
+  '#008299',
+  '#5db2ff',
+  '#0072c6',
+  '#000000',
+  '#777777',
+];
 
 const todoistModule = {
   // the all great state
@@ -28,7 +69,15 @@ const todoistModule = {
   getters: {
     oAuthToken: (state) => state.credentials.oAuthToken,
 
-    getPriorityColor: () => (priority) => PRIORITY_COLOR[priority],
+    getPriorityColor: () => (priority) => PRIORITY_COLORS[priority],
+
+    getProjectById: (state) => (id) => state.data.projects.find((project) => project.id === id),
+
+    getLabelById: (state) => (id) => state.data.labels.find((label) => label.id === id),
+
+    getLabelColor: () => (id) => LABEL_COLORS[id],
+
+    getProjectColor: () => (id) => PROJECT_COLORS[id],
   },
 
   mutations: {
