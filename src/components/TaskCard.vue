@@ -36,13 +36,55 @@
           <q-item-tile color="primary" icon="event"/>
         </q-item-side>
         <q-item-main>
-          <q-btn outline label="10 am" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="12 pm" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="02 pm" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="04 pm" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="06 pm" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="08 pm" color="primary" class="q-mx-xs"/>
-          <q-btn outline label="10 pm" color="primary" class="q-mx-xs"/>
+          <q-btn
+            outline
+            label="10 am"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('10am')"
+          />
+          <q-btn
+            outline
+            label="12 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('12pm')"
+          />
+          <q-btn
+            outline
+            label="02 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('2pm')"
+          />
+          <q-btn
+            outline
+            label="04 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('4pm')"
+          />
+          <q-btn
+            outline
+            label="06 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('6pm')"
+          />
+          <q-btn
+            outline
+            label="08 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('8pm')"
+          />
+          <q-btn
+            outline
+            label="10 pm"
+            color="primary"
+            class="q-mx-xs"
+            @click="updateDueDate('10pm')"
+          />
         </q-item-main>
       </q-item>
     </q-list>
@@ -95,6 +137,14 @@ export default {
   },
   methods: {
     ...mapGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
+    async updateDueDate(dateString) {
+      try {
+        await this.$store.dispatch('updateItemDate', {id: this.task.id, dateString});
+        this.$q.notify('Task updated');
+      } catch (err) {
+        this.$q.notify({message: 'Task update failed', type: 'negative'});
+      }
+    },
   },
 };
 </script>

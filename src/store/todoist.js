@@ -108,7 +108,7 @@ const todoistModule = {
       }
     },
 
-    async updateItemDate({ commit }, id, dueDateUtc, dateString = null) {
+    async updateItemDate({ commit }, {id, dueDateUtc = null, dateString = null}) {
       const service = new TodoistService(this.getters.oAuthToken);
       const commandUuid = uid();
       const command = {

@@ -25,6 +25,7 @@
 
     <q-page-container>
       <router-view />
+      <q-ajax-bar position="top" />
     </q-page-container>
   </q-layout>
 </template>
