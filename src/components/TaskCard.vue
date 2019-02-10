@@ -90,9 +90,8 @@
     </q-list>
     <q-card-separator/>
     <q-card-actions>
-      <q-btn flat label="Done"/>
-      <q-btn flat label="Postpone"/>
-      <q-btn flat label="Shelf"/>
+      <q-btn label="Done" color="positive" icon="check_circle" outline @click="markDone()"/>
+      <q-btn label="Postpone" color="negative" icon="update" outline/>
     </q-card-actions>
   </q-card>
 </template>
@@ -142,9 +141,18 @@ export default {
         await this.$store.dispatch('updateItemDate', {id: this.task.id, dateString});
         const response = await this.$store.dispatch('getItem', this.task.id);
         this.task = response;
-        this.$q.notify('Task updated');
+        this.$q.notify({message: 'Task rescheduled', type: 'positive'});
       } catch (err) {
         this.$q.notify({message: 'Task update failed', type: 'negative'});
+      }
+    },
+
+    async markDone() {
+      try {
+        await this.$store.dispatch('closeItem', this.task.id);
+        this.$q.notify({message: 'Task marked as done', type: 'positive'});
+      } catch (err) {
+        this.$q.notify({message: 'Could not mark task as done', type: 'negative'});
       }
     },
   },

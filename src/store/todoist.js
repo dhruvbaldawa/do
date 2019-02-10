@@ -50,7 +50,6 @@ const PROJECT_COLORS = [
 ];
 
 const todoistModule = {
-  // the all great state
   state: {
     credentials: {
       oAuthToken: '',
@@ -123,7 +122,7 @@ const todoistModule = {
 
       try {
         const response = await service.doSync([command]);
-        commit('setSyncToken', response.data.sync_token);
+        commit('setSyncToken', response.sync_token);
 
         if (response.data.sync_status[commandUuid] !== 'ok') {
           Promise.reject(response.data.sync_status[commandUuid]);
@@ -136,6 +135,11 @@ const todoistModule = {
     async getItem(_, id) {
       const service = new TodoistService(this.getters.oAuthToken);
       return service.getTask(id);
+    },
+
+    async closeItem(_, id) {
+      const service = new TodoistService(this.getters.oAuthToken);
+      return service.closeTask(id);
     },
   },
 };
