@@ -97,8 +97,10 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 import moment from 'moment';
+
+const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers('todoist');
 
 export default {
   name: 'TaskCard',
@@ -135,11 +137,12 @@ export default {
     },
   },
   methods: {
-    ...mapGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
+    ...mapTodoistGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
+    ...mapTodoistActions(['getItem', 'updateItemDate', 'closeItem']),
     async updateDueDate(dateString) {
       try {
-        await this.$store.dispatch('updateItemDate', {id: this.task.id, dateString});
-        const response = await this.$store.dispatch('getItem', this.task.id);
+        await this.updateItemDate({id: this.task.id, dateString});
+        const response = await this.getItem(this.task.id);
         this.task = response;
         this.$q.notify({message: 'Task rescheduled', type: 'positive'});
       } catch (err) {
@@ -149,7 +152,7 @@ export default {
 
     async markDone() {
       try {
-        await this.$store.dispatch('closeItem', this.task.id);
+        await this.closeItem(this.task.id);
         this.$q.notify({message: 'Task marked as done', type: 'positive'});
       } catch (err) {
         this.$q.notify({message: 'Could not mark task as done', type: 'negative'});

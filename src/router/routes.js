@@ -14,7 +14,8 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/Index.vue'),
+        component: () => import('pages/Filter.vue'),
+        props: {filter: 'overdue | today'},
         beforeEnter: requireLogin,
       },
       {

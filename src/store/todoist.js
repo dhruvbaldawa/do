@@ -49,7 +49,22 @@ const PROJECT_COLORS = [
   '#777777',
 ];
 
+const filterModule = {
+  namespaced: true,
+  state: {
+    tasks: [],
+  },
+  getters: {},
+  mutations: {},
+  actions: {},
+};
+
 const todoistModule = {
+  namespaced: true,
+  modules: {
+    filter: filterModule,
+  },
+
   state: {
     credentials: {
       oAuthToken: '',
@@ -107,8 +122,8 @@ const todoistModule = {
       }
     },
 
-    async updateItemDate({ commit }, {id, dueDateUtc = null, dateString = null}) {
-      const service = new TodoistService(this.getters.oAuthToken);
+    async updateItemDate({ commit, getters }, {id, dueDateUtc = null, dateString = null}) {
+      const service = new TodoistService(getters.oAuthToken);
       const commandUuid = uid();
       const command = {
         type: 'item_update',
@@ -132,13 +147,13 @@ const todoistModule = {
       }
     },
 
-    async getItem(_, id) {
-      const service = new TodoistService(this.getters.oAuthToken);
+    async getItem({ getters }, id) {
+      const service = new TodoistService(getters.oAuthToken);
       return service.getTask(id);
     },
 
-    async closeItem(_, id) {
-      const service = new TodoistService(this.getters.oAuthToken);
+    async closeItem({ getters }, id) {
+      const service = new TodoistService(getters.oAuthToken);
       return service.closeTask(id);
     },
   },

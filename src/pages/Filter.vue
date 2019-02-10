@@ -9,29 +9,33 @@
 <style></style>
 
 <script>
-import {mapGetters} from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 import {getToken} from '../services/TokenAuth.js';
 import TodoistService from '../services/Todoist.js';
 import TaskCard from '../components/TaskCard';
 
+const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
+
 export default {
-  name: 'IndexPage',
+  name: 'FilterView',
   components: {
     TaskCard,
+  },
+  props: {
+    filter: String,
   },
   data: () => ({
     tasks: [],
   }),
   computed: {
-    ...mapGetters(['oAuthToken']),
+    ...mapTodoistGetters(['oAuthToken']),
   },
   async mounted() {
     // @TODO: think how to handle local storage, within the container or action
-    await this.$store.dispatch('login', getToken());
+    await this.$store.dispatch('todoist/login', getToken());
     const service = new TodoistService(this.oAuthToken);
-    const tasks = await service.getTasksByFilter('overdue | today');
+    const tasks = await service.getTasksByFilter(this.filter);
     this.tasks = tasks;
-    // this.$data.tasks = tasks;
   },
 };
 </script>
