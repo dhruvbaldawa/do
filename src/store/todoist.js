@@ -132,6 +132,11 @@ const todoistModule = {
         Promise.reject(err);
       }
     },
+
+    async getItem(_, id) {
+      const service = new TodoistService(this.getters.oAuthToken);
+      return service.getTask(id);
+    },
   },
 };
 

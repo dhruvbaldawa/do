@@ -5,7 +5,6 @@
         <q-btn flat dense round @click="leftDrawerOpen = !leftDrawerOpen" aria-label="Menu">
           <q-icon name="menu" />
         </q-btn>
-
         <q-toolbar-title>Do</q-toolbar-title>
       </q-toolbar>
     </q-layout-header>

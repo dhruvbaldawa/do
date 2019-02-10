@@ -140,6 +140,8 @@ export default {
     async updateDueDate(dateString) {
       try {
         await this.$store.dispatch('updateItemDate', {id: this.task.id, dateString});
+        const response = await this.$store.dispatch('getItem', this.task.id);
+        this.task = response;
         this.$q.notify('Task updated');
       } catch (err) {
         this.$q.notify({message: 'Task update failed', type: 'negative'});
