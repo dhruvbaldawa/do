@@ -41,49 +41,49 @@
             label="10 am"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('10am')"
+            @click="updateDueDate('today 10am')"
           />
           <q-btn
             outline
             label="12 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('12pm')"
+            @click="updateDueDate('today 12pm')"
           />
           <q-btn
             outline
             label="02 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('2pm')"
+            @click="updateDueDate('today 2pm')"
           />
           <q-btn
             outline
             label="04 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('4pm')"
+            @click="updateDueDate('today 4pm')"
           />
           <q-btn
             outline
             label="06 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('6pm')"
+            @click="updateDueDate('today 6pm')"
           />
           <q-btn
             outline
             label="08 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('8pm')"
+            @click="updateDueDate('today 8pm')"
           />
           <q-btn
             outline
             label="10 pm"
             color="primary"
             class="q-mx-xs"
-            @click="updateDueDate('10pm')"
+            @click="updateDueDate('today 10pm')"
           />
         </q-item-main>
       </q-item>
@@ -101,6 +101,7 @@ import { createNamespacedHelpers } from 'vuex';
 import moment from 'moment';
 
 const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers('todoist');
+const { mapActions: mapFilterActions } = createNamespacedHelpers('todoist/filter');
 
 export default {
   name: 'TaskCard',
@@ -139,13 +140,15 @@ export default {
   methods: {
     ...mapTodoistGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
     ...mapTodoistActions(['getItem', 'updateItemDate', 'closeItem']),
+    ...mapFilterActions(['replaceTaskById', 'removeTaskById']),
     async updateDueDate(dateString) {
       try {
         await this.updateItemDate({id: this.task.id, dateString});
         const response = await this.getItem(this.task.id);
-        this.task = response;
+        this.replaceTaskById({ taskId: this.task.id, newTask: response });
         this.$q.notify({message: 'Task rescheduled', type: 'positive'});
       } catch (err) {
+        console.error(err);
         this.$q.notify({message: 'Task update failed', type: 'negative'});
       }
     },
@@ -153,6 +156,7 @@ export default {
     async markDone() {
       try {
         await this.closeItem(this.task.id);
+        this.removeTaskById(this.task.id);
         this.$q.notify({message: 'Task marked as done', type: 'positive'});
       } catch (err) {
         this.$q.notify({message: 'Could not mark task as done', type: 'negative'});

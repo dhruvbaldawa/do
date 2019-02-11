@@ -1,5 +1,6 @@
 import TodoistService from '../services/Todoist';
 import { uid } from 'quasar';
+import { findIndex, filter } from 'lodash';
 
 const PRIORITY_COLORS = {
   1: 'grey-4',
@@ -54,9 +55,29 @@ const filterModule = {
   state: {
     tasks: [],
   },
-  getters: {},
-  mutations: {},
-  actions: {},
+  getters: {
+    tasks: (state) => state.tasks,
+  },
+  mutations: {
+    setTasks: (state, tasks) => {
+      state.tasks = tasks;
+    },
+    replaceTaskById: (state, payload) => {
+      const index = findIndex(state.tasks, (task) => task.id === payload.taskId);
+      Object.assign(state.tasks[index], payload.newTask);
+    },
+    removeTaskById: (state, taskId) => {
+      state.tasks = filter(state.tasks, (task) => task.id !== taskId);
+    },
+  },
+  actions: {
+    replaceTaskById: ({ commit }, { taskId, newTask }) => {
+      commit('replaceTaskById', { taskId, newTask });
+    },
+    removeTaskById: ({ commit }, taskId) => {
+      commit('removeTaskById', taskId);
+    },
+  },
 };
 
 const todoistModule = {
@@ -139,8 +160,8 @@ const todoistModule = {
         const response = await service.doSync([command]);
         commit('setSyncToken', response.sync_token);
 
-        if (response.data.sync_status[commandUuid] !== 'ok') {
-          Promise.reject(response.data.sync_status[commandUuid]);
+        if (response.sync_status[commandUuid] !== 'ok') {
+          Promise.reject(response.sync_status[commandUuid]);
         }
       } catch (err) {
         Promise.reject(err);
