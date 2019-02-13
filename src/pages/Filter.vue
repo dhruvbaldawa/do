@@ -1,7 +1,9 @@
 <template>
   <q-page>
     <template v-if="tasks.length">
-      <task-card v-for="task in tasks" :key="task.id" :task="task" class="q-ma-md"></task-card>
+      <q-list bordered class="rounded-borders">
+        <task-card v-for="task in tasks" :key="task.id" :task="task"></task-card>
+      </q-list>
     </template>
   </q-page>
 </template>

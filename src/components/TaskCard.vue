@@ -1,104 +1,53 @@
 <template>
-  <q-card bordered class="q-ma-md">
-    <q-card-section>
-      <div class="row item-center bg-dark">
-        <q-icon name="flag" :color="priorityColor" size="1.5em"/>
-        <div class="text-h6">{{ task.content }}</div>
-        <q-chip icon="watch_later" color="deep-orange">{{ dueDate }}</q-chip>
-      </div>
-      <div class="text-subtitle2">{{ projectName }}</div>
-    </q-card-section>
-    <q-separator/>
-    <q-list>
-      <q-item v-if="labels.length">
-        <q-item-section avatar>
-          <q-icon color="primary" name="bookmarks"/>
+  <div>
+    <q-slide-item clickable v-ripple>
+      <template v-slot:left>
+        <q-icon name="done"/>
+      </template>
+      <template v-slot:right>
+        <q-icon name="alarm"/>
+      </template>
+      <q-item>
+        <q-item-section avatar top>
+          <q-icon name="flag" :color="priorityColor" size="34px"></q-icon>
         </q-item-section>
-          <q-item-section>
-            <div>
+        <q-item-section top>
+          <q-item-label lines="1">
+            <span class="text-weight-medium text-body-1">{{ task.content }}</span>
             <q-chip
-              tag
+              dense
+              outline
+              square
               v-for="label in labels"
               :key="label.id"
               :color="label.color"
-              style="mix-blend-mode: difference;"
-            >{{ label.name }}</q-chip>
-            </div>
-          </q-item-section>
-      </q-item>
-      <q-item v-if="task.due.recurring">
-        <q-item-section avatar>
-          <q-icon color="primary" name="repeat"/>
+            >
+              {{ label.name }}
+            </q-chip>
+          </q-item-label>
+          <q-item-label caption>{{ dueDate }}</q-item-label>
+          <q-item-label
+            caption
+            lines="1"
+            v-if="task.due.recurring"
+          >
+            {{ task.due.dateString }}
+          </q-item-label>
         </q-item-section>
-        <q-item-section>
-          <div class="text-h7">{{ task.due.string }}</div>
-        </q-item-section>
-      </q-item>
-      <q-item>
-        <q-item-section avatar>
-          <q-icon color="primary" name="event"/>
-        </q-item-section>
-        <q-item-section>
-          <div>
-            <q-btn
-              outline
-              label="10 am"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 10am')"
-            />
-            <q-btn
-              outline
-              label="12 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 12pm')"
-            />
-            <q-btn
-              outline
-              label="02 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 2pm')"
-            />
-            <q-btn
-              outline
-              label="04 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 4pm')"
-            />
-            <q-btn
-              outline
-              label="06 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 6pm')"
-            />
-            <q-btn
-              outline
-              label="08 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 8pm')"
-            />
-            <q-btn
-              outline
-              label="10 pm"
-              color="primary"
-              class="q-mx-xs"
-              @click="updateDueDate('today 10pm')"
-            />
+
+        <q-item-section top side>
+          <div class="text-grey-8 q-gutter-xs">
+            <q-item-label lines="1">{{ projectName }}</q-item-label>
+
+            <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete"></q-btn>
+            <q-btn class="gt-xs" size="12px" flat dense round icon="done"></q-btn>
+            <q-btn size="12px" flat dense round icon="more_vert"></q-btn> -->
           </div>
         </q-item-section>
       </q-item>
-    </q-list>
-    <q-card-separator/>
-    <q-card-actions>
-      <q-btn label="Done" color="positive" icon="check_circle" outline @click="markDone()"/>
-      <q-btn label="Postpone" color="negative" icon="update" outline/>
-    </q-card-actions>
-  </q-card>
+    </q-slide-item>
+    <q-separator inset></q-separator>
+  </div>
 </template>
 
 <script>
