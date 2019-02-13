@@ -1,19 +1,67 @@
 // Configuration for your app
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
-module.exports = function(ctx) {
+module.exports = function (ctx) {
   return {
-    // app plugins (/src/plugins)
-    plugins: ['axios'],
-    css: ['app.styl'],
-    extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      'material-icons', // optional, you are not bound to it
-      // 'ionicons',
-      // 'mdi',
-      // 'fontawesome'
+    // app boot file (/src/boot)
+    // --> boot files are part of "main.js"
+    boot: [
+      'axios',
     ],
+
+    css: [
+      'app.styl',
+    ],
+
+    extras: [
+      'roboto-font',
+      'material-icons', // optional, you are not bound to it
+      // 'ionicons-v4',
+      // 'mdi-v3',
+      // 'fontawesome-v5',
+      // 'eva-icons'
+    ],
+
+    // framework: 'all', // --- includes everything; for dev only!
+    framework: {
+      components: [
+        'QAjaxBar',
+        'QBtn',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QChip',
+        'QField',
+        'QIcon',
+        'QInput',
+        'QLayout',
+        'QDrawer',
+        'QHeader',
+        'QList',
+        'QItem',
+        'QItemSection',
+        'QItemLabel',
+        'QPage',
+        'QPageContainer',
+        'QToolbar',
+        'QToolbarTitle',
+      ],
+
+      directives: [
+        'Ripple',
+      ],
+
+      // Quasar plugins
+      plugins: [
+        'Notify',
+      ],
+
+      // iconSet: 'ionicons-v4'
+      // lang: 'de' // Quasar language
+    },
+
     supportIE: false,
+
     build: {
       scopeHoisting: true,
       // vueRouterMode: 'history',
@@ -21,7 +69,7 @@ module.exports = function(ctx) {
       // gzip: true,
       // analyze: true,
       // extractCSS: false,
-      extendWebpack(cfg) {
+      extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
@@ -31,51 +79,20 @@ module.exports = function(ctx) {
         cfg.plugins.push(new MomentLocalesPlugin());
       },
     },
+
     devServer: {
       // https: true,
       // port: 8080,
       open: true, // opens browser window automatically
     },
-    // framework: 'all' --- includes everything; for dev only!
-    framework: {
-      components: [
-        'QAjaxBar',
-        'QBtn',
-        'QCard',
-        'QCardActions',
-        'QCardMain',
-        'QCardMedia',
-        'QCardSeparator',
-        'QCardTitle',
-        'QChip',
-        'QField',
-        'QIcon',
-        'QItem',
-        'QItemMain',
-        'QItemSide',
-        'QItemTile',
-        'QInput',
-        'QLayout',
-        'QLayoutDrawer',
-        'QLayoutHeader',
-        'QList',
-        'QListHeader',
-        'QPage',
-        'QPageContainer',
-        'QToolbar',
-        'QToolbarTitle',
-      ],
-      directives: ['Ripple'],
-      // Quasar plugins
-      plugins: ['Notify'],
-      // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
-      // i18n: 'de' // Quasar language
-    },
+
     // animations: 'all' --- includes all animations
     animations: [],
+
     ssr: {
       pwa: false,
     },
+
     pwa: {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {},
@@ -116,26 +133,31 @@ module.exports = function(ctx) {
         ],
       },
     },
+
     cordova: {
       // id: 'org.cordova.quasar.app'
     },
+
     electron: {
       // bundler: 'builder', // or 'packager'
-      extendWebpack(cfg) {
+      extendWebpack (cfg) {
         // do something with Electron process Webpack cfg
       },
       packager: {
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
+
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
         // osxSign: '',
         // protocol: 'myapp://path',
+
         // Window only
         // win32metadata: { ... }
       },
       builder: {
         // https://www.electron.build/configuration/configuration
+
         // appId: 'quasar-app'
       },
     },

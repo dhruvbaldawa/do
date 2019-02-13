@@ -10,7 +10,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex';
-import {getToken} from '../services/TokenAuth.js';
+import { getToken } from '../services/TokenAuth.js';
 import TodoistService from '../services/Todoist.js';
 import TaskCard from '../components/TaskCard';
 

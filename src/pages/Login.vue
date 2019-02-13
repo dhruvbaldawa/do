@@ -28,7 +28,7 @@
 <style></style>
 
 <script>
-import {setToken} from '../services/TokenAuth';
+import { setToken } from '../services/TokenAuth';
 
 export default {
   name: 'LoginPage',

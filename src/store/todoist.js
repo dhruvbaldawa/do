@@ -1,6 +1,6 @@
-import TodoistService from '../services/Todoist';
 import { uid } from 'quasar';
 import { findIndex, filter } from 'lodash';
+import TodoistService from '../services/Todoist';
 
 const PRIORITY_COLORS = {
   1: 'grey-4',
@@ -56,18 +56,18 @@ const filterModule = {
     tasks: [],
   },
   getters: {
-    tasks: (state) => state.tasks,
+    tasks: state => state.tasks,
   },
   mutations: {
     setTasks: (state, tasks) => {
       state.tasks = tasks;
     },
     replaceTaskById: (state, payload) => {
-      const index = findIndex(state.tasks, (task) => task.id === payload.taskId);
+      const index = findIndex(state.tasks, task => task.id === payload.taskId);
       Object.assign(state.tasks[index], payload.newTask);
     },
     removeTaskById: (state, taskId) => {
-      state.tasks = filter(state.tasks, (task) => task.id !== taskId);
+      state.tasks = filter(state.tasks, task => task.id !== taskId);
     },
   },
   actions: {
@@ -99,22 +99,22 @@ const todoistModule = {
   },
 
   getters: {
-    oAuthToken: (state) => state.credentials.oAuthToken,
+    oAuthToken: state => state.credentials.oAuthToken,
 
-    getPriorityColor: () => (priority) => PRIORITY_COLORS[priority],
+    getPriorityColor: () => priority => PRIORITY_COLORS[priority],
 
-    getProjectById: (state) => (id) => state.data.projects.find((project) => project.id === id),
+    getProjectById: state => id => state.data.projects.find(project => project.id === id),
 
-    getLabelById: (state) => (id) => state.data.labels.find((label) => label.id === id),
+    getLabelById: state => id => state.data.labels.find(label => label.id === id),
 
-    getLabelColor: () => (id) => LABEL_COLORS[id],
+    getLabelColor: () => id => LABEL_COLORS[id],
 
-    getProjectColor: () => (id) => PROJECT_COLORS[id],
+    getProjectColor: () => id => PROJECT_COLORS[id],
   },
 
   mutations: {
     setOAuthToken: (state, token) => {
-      state.credentials = {...state.credentials, oAuthToken: token};
+      state.credentials = { ...state.credentials, oAuthToken: token };
     },
 
     setSyncToken: (state, syncToken) => {
@@ -143,7 +143,7 @@ const todoistModule = {
       }
     },
 
-    async updateItemDate({ commit, getters }, {id, dueDateUtc = null, dateString = null}) {
+    async updateItemDate({ commit, getters }, { id, dueDateUtc = null, dateString = null }) {
       const service = new TodoistService(getters.oAuthToken);
       const commandUuid = uid();
       const command = {

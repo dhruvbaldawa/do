@@ -1,18 +1,21 @@
 <template>
-  <q-card class="q-ma-md">
-    <q-card-title class="flex flex-top bg-dark text-white">
-      <q-icon name="flag" :color="priorityColor" size="1.5em"/>
-      {{ task.content }}
-      <span slot="subtitle" class="text-white">{{ projectName }}</span>
-      <q-chip icon="watch_later" color="deep-orange">{{ dueDate }}</q-chip>
-    </q-card-title>
+  <q-card bordered class="q-ma-md">
+    <q-card-section>
+      <div class="row item-center bg-dark">
+        <q-icon name="flag" :color="priorityColor" size="1.5em"/>
+        <div class="text-h6">{{ task.content }}</div>
+        <q-chip icon="watch_later" color="deep-orange">{{ dueDate }}</q-chip>
+      </div>
+      <div class="text-subtitle2">{{ projectName }}</div>
+    </q-card-section>
+    <q-separator/>
     <q-list>
       <q-item v-if="labels.length">
-        <q-item-side>
-          <q-item-tile color="primary" icon="bookmarks"/>
-        </q-item-side>
-        <q-item-main>
-          <q-item-tile>
+        <q-item-section avatar>
+          <q-icon color="primary" name="bookmarks"/>
+        </q-item-section>
+          <q-item-section>
+            <div>
             <q-chip
               tag
               v-for="label in labels"
@@ -20,72 +23,74 @@
               :color="label.color"
               style="mix-blend-mode: difference;"
             >{{ label.name }}</q-chip>
-          </q-item-tile>
-        </q-item-main>
+            </div>
+          </q-item-section>
       </q-item>
       <q-item v-if="task.due.recurring">
-        <q-item-side>
-          <q-item-tile color="primary" icon="repeat"/>
-        </q-item-side>
-        <q-item-main>
-          <q-item-tile>{{ task.due.string }}</q-item-tile>
-        </q-item-main>
+        <q-item-section avatar>
+          <q-icon color="primary" name="repeat"/>
+        </q-item-section>
+        <q-item-section>
+          <div class="text-h7">{{ task.due.string }}</div>
+        </q-item-section>
       </q-item>
       <q-item>
-        <q-item-side>
-          <q-item-tile color="primary" icon="event"/>
-        </q-item-side>
-        <q-item-main>
-          <q-btn
-            outline
-            label="10 am"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 10am')"
-          />
-          <q-btn
-            outline
-            label="12 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 12pm')"
-          />
-          <q-btn
-            outline
-            label="02 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 2pm')"
-          />
-          <q-btn
-            outline
-            label="04 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 4pm')"
-          />
-          <q-btn
-            outline
-            label="06 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 6pm')"
-          />
-          <q-btn
-            outline
-            label="08 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 8pm')"
-          />
-          <q-btn
-            outline
-            label="10 pm"
-            color="primary"
-            class="q-mx-xs"
-            @click="updateDueDate('today 10pm')"
-          />
-        </q-item-main>
+        <q-item-section avatar>
+          <q-icon color="primary" name="event"/>
+        </q-item-section>
+        <q-item-section>
+          <div>
+            <q-btn
+              outline
+              label="10 am"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 10am')"
+            />
+            <q-btn
+              outline
+              label="12 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 12pm')"
+            />
+            <q-btn
+              outline
+              label="02 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 2pm')"
+            />
+            <q-btn
+              outline
+              label="04 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 4pm')"
+            />
+            <q-btn
+              outline
+              label="06 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 6pm')"
+            />
+            <q-btn
+              outline
+              label="08 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 8pm')"
+            />
+            <q-btn
+              outline
+              label="10 pm"
+              color="primary"
+              class="q-mx-xs"
+              @click="updateDueDate('today 10pm')"
+            />
+          </div>
+        </q-item-section>
       </q-item>
     </q-list>
     <q-card-separator/>
@@ -100,7 +105,9 @@
 import { createNamespacedHelpers } from 'vuex';
 import moment from 'moment';
 
-const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers('todoist');
+const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers(
+  'todoist',
+);
 const { mapActions: mapFilterActions } = createNamespacedHelpers('todoist/filter');
 
 export default {
@@ -143,13 +150,13 @@ export default {
     ...mapFilterActions(['replaceTaskById', 'removeTaskById']),
     async updateDueDate(dateString) {
       try {
-        await this.updateItemDate({id: this.task.id, dateString});
+        await this.updateItemDate({ id: this.task.id, dateString });
         const response = await this.getItem(this.task.id);
         this.replaceTaskById({ taskId: this.task.id, newTask: response });
-        this.$q.notify({message: 'Task rescheduled', type: 'positive'});
+        this.$q.notify({ message: 'Task rescheduled', type: 'positive' });
       } catch (err) {
         console.error(err);
-        this.$q.notify({message: 'Task update failed', type: 'negative'});
+        this.$q.notify({ message: 'Task update failed', type: 'negative' });
       }
     },
 
@@ -157,9 +164,9 @@ export default {
       try {
         await this.closeItem(this.task.id);
         this.removeTaskById(this.task.id);
-        this.$q.notify({message: 'Task marked as done', type: 'positive'});
+        this.$q.notify({ message: 'Task marked as done', type: 'positive' });
       } catch (err) {
-        this.$q.notify({message: 'Could not mark task as done', type: 'negative'});
+        this.$q.notify({ message: 'Could not mark task as done', type: 'negative' });
       }
     },
   },
