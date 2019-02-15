@@ -51,3 +51,14 @@ $todoist-projects = {
 for name, color in $todoist-projects
   .bg-{name}
     background: color !important;
+
+$todoist-priorities = {
+  'priority-1': #E0E0E0
+  'priority-2': #FFEB3B
+  'priority-3': #FF6F00
+  'priority-4': #D50000
+}
+
+for name, color in $todoist-priorities
+  .border-{name}
+    border-left: 10px color solid;

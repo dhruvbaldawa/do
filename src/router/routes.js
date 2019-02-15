@@ -15,7 +15,7 @@ const routes = [
       {
         path: '',
         component: () => import('pages/Filter.vue'),
-        props: { filter: 'today' },
+        props: { filter: '#Test' },
         beforeEnter: requireLogin,
       },
       {

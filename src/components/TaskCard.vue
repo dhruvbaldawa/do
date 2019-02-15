@@ -7,29 +7,29 @@
       <template v-slot:right>
         <q-icon name="alarm"/>
       </template>
-      <q-item>
-        <q-item-section avatar top>
-          <q-icon name="flag" :color="priorityColor" size="34px"></q-icon>
-        </q-item-section>
+      <q-item :class="getCSSClasses">
         <q-item-section top>
           <q-item-label lines="1">
             <span class="text-weight-medium text-body-1">{{ task.content }}</span>
-            <q-chip
-              dense
+          </q-item-label>
+          <div>
+          <q-chip
               outline
+              dense
               square
               v-for="label in labels"
               :key="label.id"
               :color="label.color"
+              class="q-mr-xs q-ml-none"
             >
-              {{ label.name }}
+              <span class="text-weight-medium">{{ label.name }}</span>
             </q-chip>
-          </q-item-label>
-          <q-item-label caption>{{ dueDate }}</q-item-label>
+            </div>
+          <q-item-label lines="1">{{ projectName }}</q-item-label>
           <q-item-label
             caption
             lines="1"
-            v-if="task.due.recurring"
+            v-if="task.due && task.due.recurring"
           >
             {{ task.due.dateString }}
           </q-item-label>
@@ -37,7 +37,8 @@
 
         <q-item-section top side>
           <div class="text-grey-8 q-gutter-xs">
-            <q-item-label lines="1">{{ projectName }}</q-item-label>
+            <q-item-label caption>{{ dueDate }}</q-item-label>
+
 
             <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete"></q-btn>
             <q-btn class="gt-xs" size="12px" flat dense round icon="done"></q-btn>
@@ -46,7 +47,7 @@
         </q-item-section>
       </q-item>
     </q-slide-item>
-    <q-separator inset></q-separator>
+    <q-separator></q-separator>
   </div>
 </template>
 
@@ -65,8 +66,8 @@ export default {
     task: Object,
   },
   computed: {
-    priorityColor() {
-      return `${this.getPriorityColor()(this.task.priority)}`;
+    getCSSClasses() {
+      return `border-priority-${this.task.priority}`;
     },
     projectName() {
       return this.getProjectById()(this.task.project_id).name;
@@ -82,14 +83,18 @@ export default {
       });
     },
     dueDate() {
+      if (!this.task.due) {
+        return '';
+      }
+
       const datetime = this.task.due.datetime || this.task.due.date;
       return moment(datetime).calendar(null, {
-        sameDay: '[Today at] LT',
-        nextDay: '[Tomorrow at] LT',
-        nextWeek: 'dddd [at] LT',
-        lastDay: '[Yesterday at] LT',
-        lastWeek: '[Last] dddd [at] LT',
-        sameElse: 'Do MMMM, YYYY [at] LT',
+        sameDay: 'LT',
+        nextDay: '[Tomorrow@]LT',
+        nextWeek: 'dddd[@]LT',
+        lastDay: '[Yesterday@]LT',
+        lastWeek: '[Last] dddd[@]LT',
+        sameElse: 'Do MMMM, YYYY[@]LT',
       });
     },
   },

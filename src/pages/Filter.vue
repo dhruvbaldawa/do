@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <template v-if="tasks.length">
-      <q-list bordered class="rounded-borders">
+      <q-list>
         <task-card v-for="task in tasks" :key="task.id" :task="task"></task-card>
       </q-list>
     </template>
