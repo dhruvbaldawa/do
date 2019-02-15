@@ -12,8 +12,9 @@
           <q-item-label lines="1">
             <span class="text-weight-medium text-body-1">{{ task.content }}</span>
           </q-item-label>
+          <q-item-label lines="1">{{ projectName }}</q-item-label>
           <div>
-          <q-chip
+            <q-chip
               outline
               dense
               square
@@ -24,25 +25,20 @@
             >
               <span class="text-weight-medium">{{ label.name }}</span>
             </q-chip>
-            </div>
-          <q-item-label lines="1">{{ projectName }}</q-item-label>
-          <q-item-label
-            caption
-            lines="1"
-            v-if="task.due && task.due.recurring"
-          >
-            {{ task.due.dateString }}
-          </q-item-label>
+          </div>
+
+                      <q-item-label caption v-if="task.due && task.due.recurring">
+              <q-icon name="repeat"/>
+              {{ task.due.string }}
+            </q-item-label>
         </q-item-section>
 
         <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
+          <div class="text-grey-8 q-gutter-xs text-right">
             <q-item-label caption>{{ dueDate }}</q-item-label>
-
-
             <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete"></q-btn>
             <q-btn class="gt-xs" size="12px" flat dense round icon="done"></q-btn>
-            <q-btn size="12px" flat dense round icon="more_vert"></q-btn> -->
+            <q-btn size="12px" flat dense round icon="more_vert"></q-btn>-->
           </div>
         </q-item-section>
       </q-item>
