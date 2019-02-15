@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-slide-item clickable v-ripple>
+    <q-slide-item clickable v-ripple @left="markDone()">
       <template v-slot:left>
         <q-icon name="done"/>
       </template>
