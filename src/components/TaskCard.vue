@@ -9,8 +9,8 @@
       </template>
       <q-item :class="getCSSClasses">
         <q-item-section top>
-          <q-item-label lines="1">
-            <span class="text-weight-medium text-body-1">{{ task.content }}</span>
+          <q-item-label lines="2" class="text-weight-medium title">
+            {{ task.content }}
           </q-item-label>
           <q-item-label lines="1">{{ projectName }}</q-item-label>
           <div>
@@ -33,13 +33,11 @@
             </q-item-label>
         </q-item-section>
 
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs text-right">
-            <q-item-label caption>{{ dueDate }}</q-item-label>
+        <q-item-section side class="section-bottom">
+            <q-item-label>{{ dueDate }}</q-item-label>
             <!-- <q-btn class="gt-xs" size="12px" flat dense round icon="delete"></q-btn>
             <q-btn class="gt-xs" size="12px" flat dense round icon="done"></q-btn>
             <q-btn size="12px" flat dense round icon="more_vert"></q-btn>-->
-          </div>
         </q-item-section>
       </q-item>
     </q-slide-item>
@@ -86,10 +84,10 @@ export default {
       const datetime = this.task.due.datetime || this.task.due.date;
       return moment(datetime).calendar(null, {
         sameDay: 'LT',
-        nextDay: '[Tomorrow@]LT',
+        nextDay: '[Tom. @]LT',
         nextWeek: 'dddd[@]LT',
-        lastDay: '[Yesterday@]LT',
-        lastWeek: '[Last] dddd[@]LT',
+        lastDay: '[Y\'day@]LT',
+        lastWeek: '[Last] ddd[@]LT',
         sameElse: 'Do MMMM, YYYY[@]LT',
       });
     },
@@ -123,5 +121,10 @@ export default {
 };
 </script>
 
-<style>
+<style lang="stylus">
+.title
+  font-size: 1rem;
+
+.section-bottom
+  justify-content: flex-end !important;
 </style>
