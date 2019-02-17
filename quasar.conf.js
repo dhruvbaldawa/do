@@ -31,6 +31,7 @@ module.exports = function (ctx) {
         'QCardActions',
         'QCardSection',
         'QChip',
+        'QDialog',
         'QDrawer',
         'QField',
         'QHeader',
