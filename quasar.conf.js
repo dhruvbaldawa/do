@@ -27,6 +27,7 @@ module.exports = function (ctx) {
       components: [
         'QAjaxBar',
         'QBtn',
+        'QBtnToggle',
         'QCard',
         'QCardActions',
         'QCardSection',

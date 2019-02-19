@@ -42,7 +42,7 @@
     </q-slide-item>
     </q-item>
     <q-separator></q-separator>
-    <task-dialog :task="task" :show="dialog" :close="closeDialog"/>
+    <task-dialog :task="task" :show="dialog" @close="closeDialog"/>
   </div>
 </template>
 
