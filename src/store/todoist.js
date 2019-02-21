@@ -107,6 +107,8 @@ const todoistModule = {
 
     getLabelById: state => id => state.data.labels.find(label => label.id === id),
 
+    getLabelByName: state => name => state.data.labels.find(label => label.name === name),
+
     getLabelColor: () => id => LABEL_COLORS[id],
 
     getProjectColor: () => id => PROJECT_COLORS[id],

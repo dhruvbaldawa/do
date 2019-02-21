@@ -1,8 +1,8 @@
 <template>
-  <q-dialog :value="showDialog" @hide="close" full-width position="bottom">
+  <q-dialog :value="showDialog" @hide="close" @show="onShow" full-width position="bottom">
     <q-card>
       <q-card-section>
-        <div class="text-h6">{{ task.content }}</div>
+        <div class="text-h6">{{ activeTask.content }}</div>
       </q-card-section>
 
       <q-card-section align="center">
@@ -11,7 +11,7 @@
           unelevated
           size="lg"
           stretch
-          v-model="task.priority"
+          v-model="activeTask.priority"
           toggle-color="blue-grey-3"
           toggle-text-color="pink"
           :options="[
@@ -28,33 +28,43 @@
       <q-card-section align="center">
         <q-btn-toggle
           ripple
-          v-model="task.priority"
+          v-model="activeTask.due.string"
           toggle-color="primary"
           :options="[
-              { value: 4, label: 'today' },
-              { value: 3, label: 'tomorrow' },
-              { value: 2, label: 'weekend' },
+              { value: 'today', label: 'today' },
+              { value: 'tomorrow', label: 'tomorrow' },
+              { value: 'friday', label: 'weekend' },
             ]"
         />
-        <q-input :placeholder="task.dueString" dense>
+        <q-input :value="activeTask.due.string" dense>
           <template v-slot:prepend>
-            <q-icon name="schedule" />
+            <q-icon name="schedule"/>
           </template>
         </q-input>
       </q-card-section>
 
       <q-card-section align="center">
         <div class="row inline">
-          <q-btn class="q-ma-xs" outline rounded label="follow up"/>
-          <q-btn class="q-ma-xs" outline rounded label="email"/>
-          <q-btn class="q-ma-xs" outline rounded label="next"/>
-          <q-btn class="q-ma-xs" outline rounded label="home"/>
-          <q-btn class="q-ma-xs" outline rounded label="work"/>
+          <q-btn
+            v-for="label in contextLabels"
+            class="q-ma-xs"
+            :outline="label.selected"
+            @click="toggleLabel(label)"
+            :key="label.id"
+            rounded
+            :label="label.label"
+          />
         </div>
         <div class="row inline">
-          <q-btn class="q-ma-xs" outline rounded label="5m"/>
-          <q-btn class="q-ma-xs" outline rounded label="15m"/>
-          <q-btn class="q-ma-xs" outline rounded label="30m"/>
+          <q-btn
+            v-for="label in effortLabels"
+            class="q-ma-xs"
+            :outline="label.selected"
+            @click="toggleLabel(label)"
+            :key="label.id"
+            rounded
+            :label="label.label"
+          />
         </div>
       </q-card-section>
 
@@ -70,6 +80,14 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
+import {
+  map,
+  concat,
+  each,
+  includes,
+  intersection,
+} from 'lodash';
+
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
 
 export default {
@@ -78,15 +96,52 @@ export default {
     task: Object,
     show: Boolean,
   },
+  data() {
+    return {
+      activeTask: { ...this.task },
+      contextLabels: [
+        { id: 2149282899, label: 'followup', selected: false },
+        { id: 2150460844, label: 'email', selected: false },
+        { id: 2150224661, label: 'next', selected: false },
+        { id: 2150231805, label: 'home', selected: false },
+        { id: 2150231806, label: 'work', selected: false },
+      ],
+      effortLabels: [
+        { id: 2152020507, label: '5m', selected: false },
+        { id: 2152020508, label: '10m', selected: false },
+        { id: 2152020510, label: '30m', selected: false },
+      ],
+    };
+  },
   computed: {
     showDialog() {
       return this.$props.show;
     },
   },
   methods: {
-    ...mapTodoistGetters(['getPriorityColor']),
+    ...mapTodoistGetters(['getLabelByName']),
     close(evt) {
       this.$emit('close', evt);
+    },
+    toggleLabel(label) {
+      label.selected = !label.selected;
+    },
+    getAllLabelIds() {
+      return map(concat(this.effortLabels, this.contextLabels), (item) => item.id);
+    },
+    updateActiveLabels(activeLabels, labels) {
+      each(labels, (item) => {
+        if (includes(activeLabels, item.id)) {
+          item.selected = true;
+        }
+      });
+    },
+    onShow() {
+      const labelIds = this.getAllLabelIds();
+      const activeLabels = intersection(labelIds, this.activeTask.label_ids);
+
+      this.updateActiveLabels(activeLabels, this.contextLabels);
+      this.updateActiveLabels(activeLabels, this.effortLabels);
     },
   },
 };
