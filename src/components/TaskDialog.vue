@@ -43,35 +43,35 @@
         </q-input>
       </q-card-section>
 
-      <q-card-section align="center">
-        <div class="row inline">
+      <q-card-section>
+        <div class="row inline justify-center full-width">
           <q-btn
             v-for="label in contextLabels"
-            class="q-ma-xs"
-            :outline="label.selected"
+            outline
+            rounded
+            :class="label.selected ? 'label-selected q-ma-xs' : 'label-not-selected q-ma-xs'"
             @click="toggleLabel(label)"
             :key="label.id"
-            rounded
             :label="label.label"
           />
         </div>
-        <div class="row inline">
+        <div class="row inline justify-center full-width">
           <q-btn
             v-for="label in effortLabels"
-            class="q-ma-xs"
-            :outline="label.selected"
+            outline
+            rounded
+            :class="label.selected ? 'label-selected q-ma-xs' : 'label-not-selected q-ma-xs'"
             @click="toggleLabel(label)"
             :key="label.id"
-            rounded
             :label="label.label"
           />
         </div>
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat>Cancel</q-btn>
-        <q-btn flat>Postpone</q-btn>
-        <q-btn flat color="positive">Done</q-btn>
+        <q-btn flat color="negative">Cancel</q-btn>
+        <q-btn flat color="amber">Postpone</q-btn>
+        <q-btn flat color="positive" @click="onSave">Save</q-btn>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -80,13 +80,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex';
 
-import {
-  map,
-  concat,
-  each,
-  includes,
-  intersection,
-} from 'lodash';
+import _ from 'lodash';
 
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
 
@@ -120,32 +114,71 @@ export default {
   },
   methods: {
     ...mapTodoistGetters(['getLabelByName']),
+
     close(evt) {
       this.$emit('close', evt);
     },
+
     toggleLabel(label) {
       label.selected = !label.selected;
     },
+
     getAllLabelIds() {
-      return map(concat(this.effortLabels, this.contextLabels), (item) => item.id);
+      return _.map(_.concat(this.effortLabels, this.contextLabels), (item) => item.id);
     },
+
     updateActiveLabels(activeLabels, labels) {
-      each(labels, (item) => {
-        if (includes(activeLabels, item.id)) {
+      _.each(labels, (item) => {
+        if (_.includes(activeLabels, item.id)) {
           item.selected = true;
         }
       });
     },
+
     onShow() {
       const labelIds = this.getAllLabelIds();
-      const activeLabels = intersection(labelIds, this.activeTask.label_ids);
+      const activeLabels = _.intersection(labelIds, this.activeTask.label_ids);
 
       this.updateActiveLabels(activeLabels, this.contextLabels);
       this.updateActiveLabels(activeLabels, this.effortLabels);
+    },
+
+    updateFinalLabelIds() {
+      const labelsToAdd = _
+        .chain(_.concat(this.effortLabels, this.contextLabels))
+        .filter((item) => item.selected)
+        .map((item) => item.id)
+        .value();
+      const labelsToRemove = _
+        .chain(_.concat(this.effortLabels, this.contextLabels))
+        .filter((item) => !item.selected)
+        .map((item) => item.id)
+        .value();
+
+      return _
+        .chain(this.activeTask.label_ids)
+        .union(labelsToAdd)
+        .difference(labelsToRemove)
+        .value();
+    },
+
+    onSave() {
+      const labels = this.updateFinalLabelIds();
     },
   },
 };
 </script>
 
 <style lang="stylus">
+@import '~quasar-variables';
+
+.label-selected {
+  background: $primary !important;
+  color: white;
+}
+
+.label-not-selected {
+  background: white;
+  color: $primary;
+}
 </style>
