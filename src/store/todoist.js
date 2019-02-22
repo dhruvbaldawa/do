@@ -56,18 +56,18 @@ const filterModule = {
     tasks: [],
   },
   getters: {
-    tasks: state => state.tasks,
+    tasks: (state) => state.tasks,
   },
   mutations: {
     setTasks: (state, tasks) => {
       state.tasks = tasks;
     },
     replaceTaskById: (state, payload) => {
-      const index = findIndex(state.tasks, task => task.id === payload.taskId);
+      const index = findIndex(state.tasks, (task) => task.id === payload.taskId);
       Object.assign(state.tasks[index], payload.newTask);
     },
     removeTaskById: (state, taskId) => {
-      state.tasks = filter(state.tasks, task => task.id !== taskId);
+      state.tasks = filter(state.tasks, (task) => task.id !== taskId);
     },
   },
   actions: {
@@ -99,19 +99,19 @@ const todoistModule = {
   },
 
   getters: {
-    oAuthToken: state => state.credentials.oAuthToken,
+    oAuthToken: (state) => state.credentials.oAuthToken,
 
-    getPriorityColor: () => priority => PRIORITY_COLORS[priority],
+    getPriorityColor: () => (priority) => PRIORITY_COLORS[priority],
 
-    getProjectById: state => id => state.data.projects.find(project => project.id === id),
+    getProjectById: (state) => (id) => state.data.projects.find((project) => project.id === id),
 
-    getLabelById: state => id => state.data.labels.find(label => label.id === id),
+    getLabelById: (state) => (id) => state.data.labels.find((label) => label.id === id),
 
-    getLabelByName: state => name => state.data.labels.find(label => label.name === name),
+    getLabelByName: (state) => (name) => state.data.labels.find((label) => label.name === name),
 
-    getLabelColor: () => id => LABEL_COLORS[id],
+    getLabelColor: () => (id) => LABEL_COLORS[id],
 
-    getProjectColor: () => id => PROJECT_COLORS[id],
+    getProjectColor: () => (id) => PROJECT_COLORS[id],
   },
 
   mutations: {
@@ -145,6 +145,7 @@ const todoistModule = {
       }
     },
 
+    // @TODO: deprecate
     async updateItemDate({ commit, getters }, { id, dueDateUtc = null, dateString = null }) {
       const service = new TodoistService(getters.oAuthToken);
       const commandUuid = uid();
@@ -154,6 +155,42 @@ const todoistModule = {
           id,
           due_date_utc: dueDateUtc,
           date_string: dateString,
+        },
+        uuid: commandUuid,
+      };
+
+      try {
+        const response = await service.doSync([command]);
+        commit('setSyncToken', response.sync_token);
+
+        if (response.sync_status[commandUuid] !== 'ok') {
+          Promise.reject(response.sync_status[commandUuid]);
+        }
+      } catch (err) {
+        Promise.reject(err);
+      }
+    },
+
+    /**
+     * @param {*} ditch
+     * @param {*} taskArgs - can have
+     *  - content
+     *  - priority
+     *  - labels
+     *  - due_date_utc
+     *  - date_string
+     *  - read docs - https://developer.todoist.com/sync/v7/#update-an-item
+     */
+    async updateItem(
+      { commit, getters },
+      taskArgs,
+    ) {
+      const service = new TodoistService(getters.oAuthToken);
+      const commandUuid = uid();
+      const command = {
+        type: 'item_update',
+        args: {
+          ...taskArgs,
         },
         uuid: commandUuid,
       };

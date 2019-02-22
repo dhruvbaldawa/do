@@ -163,7 +163,12 @@ export default {
     },
 
     onSave() {
-      const labels = this.updateFinalLabelIds();
+      this.$emit('save', {
+        id: this.activeTask.id,
+        labels: this.updateFinalLabelIds(),
+        priority: this.activeTask.priority,
+        content: this.activeTask.content,
+      });
     },
   },
 };

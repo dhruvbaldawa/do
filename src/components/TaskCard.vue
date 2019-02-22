@@ -42,7 +42,7 @@
     </q-slide-item>
     </q-item>
     <q-separator></q-separator>
-    <task-dialog :task="task" :show="dialog" @close="closeDialog"/>
+    <task-dialog :task="task" :show="dialog" @close="closeDialog" @save="saveDialog"/>
   </div>
 </template>
 
@@ -104,14 +104,29 @@ export default {
   },
   methods: {
     ...mapTodoistGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
-    ...mapTodoistActions(['getItem', 'updateItemDate', 'closeItem']),
+    ...mapTodoistActions(['getItem', 'updateItemDate', 'closeItem', 'updateItem']),
     ...mapFilterActions(['replaceTaskById', 'removeTaskById']),
     showDialog() {
       this.dialog = true;
     },
+
     closeDialog() {
       this.dialog = false;
     },
+
+    async saveDialog(taskArgs) {
+      this.closeDialog();
+      try {
+        await this.updateItem(taskArgs);
+        const response = await this.getItem(this.task.id);
+        this.replaceTaskById({ taskId: this.task.id, newTask: response });
+        this.$q.notify({ message: 'Task updated', type: 'positive' });
+      } catch (err) {
+        console.error(err);
+        this.$q.notify({ message: 'Task update failed, please re-save', type: 'negative' });
+      }
+    },
+
     async updateDueDate(dateString) {
       try {
         await this.updateItemDate({ id: this.task.id, dateString });
