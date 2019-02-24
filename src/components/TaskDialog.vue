@@ -28,19 +28,15 @@
       <q-card-section align="center">
         <q-btn-toggle
           ripple
-          v-model="activeTask.due.string"
+          v-model="dueValue"
           toggle-color="primary"
+          @input="onChangeDueDate"
           :options="[
               { value: 'today', label: 'today' },
               { value: 'tomorrow', label: 'tomorrow' },
               { value: 'friday', label: 'weekend' },
             ]"
         />
-        <q-input :value="activeTask.due.string" dense>
-          <template v-slot:prepend>
-            <q-icon name="schedule"/>
-          </template>
-        </q-input>
       </q-card-section>
 
       <q-card-section>
@@ -69,7 +65,7 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat color="negative">Cancel</q-btn>
+        <q-btn flat color="negative" @click="close">Cancel</q-btn>
         <q-btn flat color="amber">Postpone</q-btn>
         <q-btn flat color="positive" @click="onSave">Save</q-btn>
       </q-card-actions>
@@ -82,6 +78,8 @@ import { createNamespacedHelpers } from 'vuex';
 
 import _ from 'lodash';
 
+import moment from 'moment';
+
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
 
 export default {
@@ -93,6 +91,8 @@ export default {
   data() {
     return {
       activeTask: { ...this.task },
+      dueDate: null,
+      dueValue: '',
       contextLabels: [
         { id: 2149282899, label: 'followup', selected: false },
         { id: 2150460844, label: 'email', selected: false },
@@ -135,6 +135,36 @@ export default {
       });
     },
 
+    onChangeDueDate(value) {
+      this.dueValue = value;
+
+      switch (value) {
+        case 'today':
+          this.dueDate = moment()
+            .utc()
+            .format('YYYY-MM-DDT00:00');
+          break;
+
+        case 'tomorrow':
+          this.dueDate = moment()
+            .add(1, 'd')
+            .utc()
+            .format('YYYY-MM-DDT00:00');
+          break;
+
+        case 'friday':
+          this.dueDate = moment()
+            .endOf('week')
+            .subtract(1, 'd')
+            .utc()
+            .format('YYYY-MM-DDT00:00');
+          break;
+
+        default:
+          break;
+      }
+    },
+
     onShow() {
       const labelIds = this.getAllLabelIds();
       const activeLabels = _.intersection(labelIds, this.activeTask.label_ids);
@@ -144,31 +174,37 @@ export default {
     },
 
     updateFinalLabelIds() {
-      const labelsToAdd = _
-        .chain(_.concat(this.effortLabels, this.contextLabels))
+      const labelsToAdd = _.chain(_.concat(this.effortLabels, this.contextLabels))
         .filter((item) => item.selected)
         .map((item) => item.id)
         .value();
-      const labelsToRemove = _
-        .chain(_.concat(this.effortLabels, this.contextLabels))
+      const labelsToRemove = _.chain(_.concat(this.effortLabels, this.contextLabels))
         .filter((item) => !item.selected)
         .map((item) => item.id)
         .value();
 
-      return _
-        .chain(this.activeTask.label_ids)
+      return _.chain(this.activeTask.label_ids)
         .union(labelsToAdd)
         .difference(labelsToRemove)
         .value();
     },
 
     onSave() {
-      this.$emit('save', {
+      const payload = {
         id: this.activeTask.id,
         labels: this.updateFinalLabelIds(),
         priority: this.activeTask.priority,
         content: this.activeTask.content,
-      });
+      };
+
+      if (this.dueDate !== null) {
+        payload.due_date_utc = this.dueDate;
+        payload.date_string = this.activeTask.due.date_string
+          ? this.activeTask.due.date_string
+          : null;
+      }
+
+      this.$emit('save', payload);
     },
   },
 };
