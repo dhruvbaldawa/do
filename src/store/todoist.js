@@ -1,5 +1,5 @@
 import { uid } from 'quasar';
-import { findIndex, filter } from 'lodash';
+import _ from 'lodash';
 import TodoistService from '../services/Todoist';
 
 const PRIORITY_COLORS = {
@@ -63,11 +63,11 @@ const filterModule = {
       state.tasks = tasks;
     },
     replaceTaskById: (state, payload) => {
-      const index = findIndex(state.tasks, (task) => task.id === payload.taskId);
+      const index = _.findIndex(state.tasks, (task) => task.id === payload.taskId);
       Object.assign(state.tasks[index], payload.newTask);
     },
     removeTaskById: (state, taskId) => {
-      state.tasks = filter(state.tasks, (task) => task.id !== taskId);
+      state.tasks = _.filter(state.tasks, (task) => task.id !== taskId);
     },
   },
   actions: {
@@ -103,9 +103,9 @@ const todoistModule = {
 
     getPriorityColor: () => (priority) => PRIORITY_COLORS[priority],
 
-    getProjectById: (state) => (id) => state.data.projects.find((project) => project.id === id),
+    getProjectById: (state) => (id) => state.data.projects[id],
 
-    getLabelById: (state) => (id) => state.data.labels.find((label) => label.id === id),
+    getLabelById: (state) => (id) => state.data.labels[id],
 
     getLabelByName: (state) => (name) => state.data.labels.find((label) => label.name === name),
 
@@ -123,8 +123,22 @@ const todoistModule = {
       state.syncToken = syncToken;
     },
 
-    setTodoistData: (state, { user, projects, labels }) => {
-      state.data = { user, projects, labels };
+    setTodoistData: (state, { user, projects: projectsData, labels: labelsData }) => {
+      const projects = _.chain(projectsData)
+        .filter((item) => !_.some([item.is_archived, item.is_deleted]))
+        .keyBy('id')
+        .value();
+
+      const labels = _.chain(labelsData)
+        .filter(['is_deleted', 0])
+        .keyBy('id')
+        .value();
+
+      state.data = {
+        user,
+        projects,
+        labels,
+      };
     },
   },
 
