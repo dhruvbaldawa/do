@@ -167,7 +167,7 @@ export default {
 
     onShow() {
       const labelIds = this.getAllLabelIds();
-      const activeLabels = _.intersection(labelIds, this.activeTask.label_ids);
+      const activeLabels = _.intersection(labelIds, this.activeTask.labels);
 
       this.updateActiveLabels(activeLabels, this.contextLabels);
       this.updateActiveLabels(activeLabels, this.effortLabels);
@@ -183,7 +183,7 @@ export default {
         .map((item) => item.id)
         .value();
 
-      return _.chain(this.activeTask.label_ids)
+      return _.chain(this.activeTask.labels)
         .union(labelsToAdd)
         .difference(labelsToRemove)
         .value();

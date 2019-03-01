@@ -10,7 +10,7 @@ export default class TodoistService {
     });
 
     this.sync_client = axios.create({
-      baseURL: 'https://todoist.com/api/v7/',
+      baseURL: 'https://todoist.com/api/v7.4/',
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
     });
   }
@@ -21,7 +21,7 @@ export default class TodoistService {
       qs.stringify({
         token: this.token,
         sync_token: '*',
-        resource_types: '["labels", "projects", "user"]',
+        resource_types: '["labels", "projects", "user", "items"]',
       }),
     );
   }

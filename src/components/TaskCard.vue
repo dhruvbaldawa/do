@@ -74,10 +74,11 @@ export default {
       return `border-priority-${this.task.priority}`;
     },
     projectName() {
+      // debugger;
       return this.getProjectById()(this.task.project_id).name;
     },
     labels() {
-      return this.task.label_ids.map((labelId) => {
+      return this.task.labels.map((labelId) => {
         const label = this.getLabelById()(labelId);
         return {
           id: label.id,

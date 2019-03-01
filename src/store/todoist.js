@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { uid } from 'quasar';
 import _ from 'lodash';
 import TodoistService from '../services/Todoist';
@@ -53,21 +54,20 @@ const PROJECT_COLORS = [
 const filterModule = {
   namespaced: true,
   state: {
-    tasks: [],
+    tasks: {},
   },
   getters: {
     tasks: (state) => state.tasks,
   },
   mutations: {
     setTasks: (state, tasks) => {
-      state.tasks = tasks;
+      Vue.set(state, 'tasks', tasks);
     },
     replaceTaskById: (state, payload) => {
-      const index = _.findIndex(state.tasks, (task) => task.id === payload.taskId);
-      Object.assign(state.tasks[index], payload.newTask);
+      Vue.set(state.tasks, payload.taskId, payload.newTask);
     },
     removeTaskById: (state, taskId) => {
-      state.tasks = _.filter(state.tasks, (task) => task.id !== taskId);
+      Vue.delete(state.tasks, taskId);
     },
   },
   actions: {
@@ -95,6 +95,7 @@ const todoistModule = {
       projects: {},
       labels: {},
       user: {},
+      items: {},
     },
   },
 
@@ -107,7 +108,10 @@ const todoistModule = {
 
     getLabelById: (state) => (id) => state.data.labels[id],
 
-    getLabelByName: (state) => (name) => state.data.labels.find((label) => label.name === name),
+    getItemById: (state) => (id) => state.data.items[id],
+
+    getLabelByName: (state) => (name) => _.values(state.data.labels)
+      .find((label) => label.name === name),
 
     getLabelColor: () => (id) => LABEL_COLORS[id],
 
@@ -123,9 +127,19 @@ const todoistModule = {
       state.syncToken = syncToken;
     },
 
-    setTodoistData: (state, { user, projects: projectsData, labels: labelsData }) => {
+    setTodoistData: (
+      state,
+      {
+        user, projects: projectsData, labels: labelsData, items: itemsData,
+      },
+    ) => {
       const projects = _.chain(projectsData)
         .filter((item) => !_.some([item.is_archived, item.is_deleted]))
+        .keyBy('id')
+        .value();
+
+      const items = _.chain(itemsData)
+        .filter((item) => !_.some([item.is_archived, item.is_deleted, item.checked]))
         .keyBy('id')
         .value();
 
@@ -138,6 +152,7 @@ const todoistModule = {
         user,
         projects,
         labels,
+        items,
       };
     },
   },
@@ -153,6 +168,7 @@ const todoistModule = {
           user: response.data.user,
           projects: response.data.projects,
           labels: response.data.labels,
+          items: response.data.items,
         });
       } catch (err) {
         Promise.reject(err);
@@ -195,10 +211,7 @@ const todoistModule = {
      *  - date_string
      *  - read docs - https://developer.todoist.com/sync/v7/#update-an-item
      */
-    async updateItem(
-      { commit, getters },
-      taskArgs,
-    ) {
+    async updateItem({ commit, getters }, taskArgs) {
       const service = new TodoistService(getters.oAuthToken);
       const commandUuid = uid();
       const command = {

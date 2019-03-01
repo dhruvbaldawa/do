@@ -1,8 +1,13 @@
 <template>
   <q-page>
-    <template v-if="tasks.length">
+    <template v-if="hasItems">
       <q-list>
-        <task-card v-for="task in tasks" :key="task.id" :task="task"></task-card>
+        <task-card
+          v-for="(task, id) in tasks"
+          :task="task"
+          :key="id"
+        >
+        </task-card>
       </q-list>
     </template>
   </q-page>
@@ -11,13 +16,17 @@
 <style></style>
 
 <script>
+import _ from 'lodash';
+
 import { createNamespacedHelpers } from 'vuex';
 import { getToken } from '../services/TokenAuth.js';
 import TodoistService from '../services/Todoist.js';
 import TaskCard from '../components/TaskCard';
 
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
-const { mapState: mapFiltersState, mapMutations: mapFilterMutations } = createNamespacedHelpers('todoist/filter');
+const { mapState: mapFiltersState, mapMutations: mapFilterMutations } = createNamespacedHelpers(
+  'todoist/filter',
+);
 
 export default {
   name: 'FilterView',
@@ -28,8 +37,11 @@ export default {
     filter: String,
   },
   computed: {
-    ...mapTodoistGetters(['oAuthToken']),
+    ...mapTodoistGetters(['oAuthToken', 'getItemById']),
     ...mapFiltersState(['tasks']),
+    hasItems() {
+      return _.size(this.tasks);
+    },
   },
   methods: {
     ...mapFilterMutations(['setTasks']),
@@ -39,7 +51,10 @@ export default {
     await this.$store.dispatch('todoist/login', getToken());
     const service = new TodoistService(this.oAuthToken);
     const tasks = await service.getTasksByFilter(this.filter);
-    this.setTasks(tasks);
+    this.setTasks(_.reduce(tasks, (obj, item) => {
+      obj[item.id] = this.getItemById(item.id);
+      return obj;
+    }, {}));
   },
 };
 </script>
