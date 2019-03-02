@@ -28,7 +28,7 @@
               </q-chip>
             </div>
 
-            <q-item-label caption v-if="task.due && task.due.recurring">
+            <q-item-label caption v-if="task.due && task.due.is_recurring">
               <q-icon name="repeat" />
               {{ task.due.string }}
             </q-item-label>
@@ -131,7 +131,6 @@ export default {
     async markDone(details) {
       try {
         await this.closeItem(this.task.id);
-        this.sync();
         this.$q.notify({ message: 'Task marked as done', type: 'positive' });
       } catch (err) {
         this.$q.notify({

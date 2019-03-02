@@ -28,17 +28,6 @@ export default class TodoistService {
     });
   }
 
-  async closeTask(id) {
-    return new Promise((resolve, reject) => {
-      this.rest_client
-        .post(`/tasks/${id}/close`)
-        .then((response) => {
-          resolve(response.status === 204);
-        })
-        .catch(reject);
-    });
-  }
-
   async getTasksByFilter(filter) {
     return new Promise((resolve, reject) => {
       this.rest_client

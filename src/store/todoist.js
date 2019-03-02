@@ -195,9 +195,28 @@ const todoistModule = {
       });
     },
 
-    async closeItem({ getters }, id) {
+    async closeItem({ dispatch, getters }, taskId) {
       const service = new TodoistService(getters.oAuthToken);
-      return service.closeTask(id);
+      const commandUuid = uid();
+      const command = {
+        type: 'item_close',
+        args: {
+          id: taskId,
+        },
+        uuid: commandUuid,
+      };
+
+      try {
+        const response = await service.sync(getters.syncToken, [command]);
+
+        dispatch('handleResponse', response);
+
+        if (response.sync_status[commandUuid] !== 'ok') {
+          Promise.reject(response.sync_status[commandUuid]);
+        }
+      } catch (err) {
+        Promise.reject(err);
+      }
     },
   },
 };
