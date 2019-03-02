@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { uid } from 'quasar';
 import _ from 'lodash';
 import TodoistService from '../services/Todoist';
@@ -51,41 +50,8 @@ const PROJECT_COLORS = [
   '#777777',
 ];
 
-const filterModule = {
-  namespaced: true,
-  state: {
-    tasks: {},
-  },
-  getters: {
-    tasks: (state) => state.tasks,
-  },
-  mutations: {
-    setTasks: (state, tasks) => {
-      Vue.set(state, 'tasks', tasks);
-    },
-    replaceTaskById: (state, payload) => {
-      Vue.set(state.tasks, payload.taskId, payload.newTask);
-    },
-    removeTaskById: (state, taskId) => {
-      Vue.delete(state.tasks, taskId);
-    },
-  },
-  actions: {
-    replaceTaskById: ({ commit }, { taskId, newTask }) => {
-      commit('replaceTaskById', { taskId, newTask });
-    },
-    removeTaskById: ({ commit }, taskId) => {
-      commit('removeTaskById', taskId);
-    },
-  },
-};
-
 const todoistModule = {
   namespaced: true,
-  modules: {
-    filter: filterModule,
-  },
-
   state: {
     credentials: {
       oAuthToken: '',
@@ -100,6 +66,8 @@ const todoistModule = {
   },
 
   getters: {
+    items: (state) => state.data.items,
+
     oAuthToken: (state) => state.credentials.oAuthToken,
 
     syncToken: (state) => state.syncToken,

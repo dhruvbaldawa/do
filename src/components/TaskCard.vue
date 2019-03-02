@@ -56,7 +56,6 @@ import TaskDialog from './TaskDialog';
 const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers(
   'todoist',
 );
-const { mapActions: mapFilterActions } = createNamespacedHelpers('todoist/filter');
 
 export default {
   name: 'TaskCard',
@@ -105,9 +104,8 @@ export default {
     },
   },
   methods: {
-    ...mapTodoistGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
-    ...mapTodoistActions(['updateItemDate', 'closeItem', 'updateItem']),
-    ...mapFilterActions(['replaceTaskById', 'removeTaskById']),
+    ...mapTodoistGetters(['getProjectById', 'getLabelById']),
+    ...mapTodoistActions(['closeItem', 'updateItem']),
     showDialog() {
       this.dialog = true;
     },
