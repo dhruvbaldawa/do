@@ -15,7 +15,7 @@ import _ from 'lodash';
 
 import { createNamespacedHelpers } from 'vuex';
 import { getToken } from '../services/TokenAuth.js';
-import TodoistService from '../services/Todoist.js';
+// import TodoistService from '../services/Todoist.js';
 import TaskCard from '../components/TaskCard';
 
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
@@ -33,34 +33,19 @@ export default {
       filteredIds: [],
     };
   },
-  methods: {
-    async fetchTasks() {
-      const service = new TodoistService(this.oAuthToken);
-      const tasks = await service.getTasksByFilter(this.filter);
-      this.filteredIds = _.map(tasks, (task) => task.id);
-    },
-  },
   computed: {
     ...mapTodoistGetters(['oAuthToken', 'getItemById', 'items']),
     hasItems() {
       return _.size(this.filteredItems);
     },
     filteredItems() {
-      return _.reduce(
-        this.filteredIds,
-        (obj, id) => {
-          obj[id] = this.getItemById(id);
-          return obj;
-        },
-        {},
-      );
+      return this.items;
     },
   },
 
   async mounted() {
     // @TODO: think how to handle local storage, within the container or action
     await this.$store.dispatch('todoist/login', getToken());
-    await this.fetchTasks();
   },
 };
 </script>

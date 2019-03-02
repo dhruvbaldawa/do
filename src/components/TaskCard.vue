@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-item clickable v-ripple @click="showDialog()" class="q-pa-none">
-      <q-slide-item @left="markDone()" class="full-width">
+      <q-slide-item @left="markDone" class="full-width">
         <template v-slot:left>
           <q-icon name="done" />
         </template>
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     ...mapTodoistGetters(['getProjectById', 'getLabelById']),
-    ...mapTodoistActions(['closeItem', 'updateItem']),
+    ...mapTodoistActions(['closeItem', 'updateItem', 'sync']),
     showDialog() {
       this.dialog = true;
     },
@@ -128,16 +128,18 @@ export default {
       }
     },
 
-    async markDone() {
+    async markDone(details) {
       try {
         await this.closeItem(this.task.id);
-        this.removeTaskById(this.task.id);
+        this.sync();
         this.$q.notify({ message: 'Task marked as done', type: 'positive' });
       } catch (err) {
         this.$q.notify({
           message: 'Could not mark task as done',
           type: 'negative',
         });
+      } finally {
+        details.reset();
       }
     },
   },
