@@ -74,7 +74,6 @@ export default {
       return `border-priority-${this.task.priority}`;
     },
     projectName() {
-      // debugger;
       return this.getProjectById()(this.task.project_id).name;
     },
     labels() {
@@ -105,7 +104,7 @@ export default {
   },
   methods: {
     ...mapTodoistGetters(['getPriorityColor', 'getProjectById', 'getLabelById', 'getLabelColor']),
-    ...mapTodoistActions(['getItem', 'updateItemDate', 'closeItem', 'updateItem']),
+    ...mapTodoistActions(['updateItemDate', 'closeItem', 'updateItem']),
     ...mapFilterActions(['replaceTaskById', 'removeTaskById']),
     showDialog() {
       this.dialog = true;
@@ -119,24 +118,10 @@ export default {
       this.closeDialog();
       try {
         await this.updateItem(taskArgs);
-        const response = await this.getItem(this.task.id);
-        this.replaceTaskById({ taskId: this.task.id, newTask: response });
         this.$q.notify({ message: 'Task updated', type: 'positive' });
       } catch (err) {
         console.error(err);
         this.$q.notify({ message: 'Task update failed, please re-save', type: 'negative' });
-      }
-    },
-
-    async updateDueDate(dateString) {
-      try {
-        await this.updateItemDate({ id: this.task.id, dateString });
-        const response = await this.getItem(this.task.id);
-        this.replaceTaskById({ taskId: this.task.id, newTask: response });
-        this.$q.notify({ message: 'Task rescheduled', type: 'positive' });
-      } catch (err) {
-        console.error(err);
-        this.$q.notify({ message: 'Task update failed', type: 'negative' });
       }
     },
 

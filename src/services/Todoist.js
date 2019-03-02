@@ -1,6 +1,8 @@
 import axios from 'axios';
 import qs from 'qs';
 
+const SYNCED_RESOURCE_TYPES = '["labels", "projects", "user", "items"]';
+
 export default class TodoistService {
   constructor(token) {
     this.token = token;
@@ -21,7 +23,18 @@ export default class TodoistService {
       qs.stringify({
         token: this.token,
         sync_token: '*',
-        resource_types: '["labels", "projects", "user", "items"]',
+        resource_types: SYNCED_RESOURCE_TYPES,
+      }),
+    );
+  }
+
+  async readSync(syncToken) {
+    return this.sync_client.post(
+      '/sync',
+      qs.stringify({
+        token: this.token,
+        sync_token: syncToken,
+        resource_types: SYNCED_RESOURCE_TYPES,
       }),
     );
   }
@@ -59,10 +72,15 @@ export default class TodoistService {
     });
   }
 
-  async doSync(commands) {
+  async doSync(syncToken, commands) {
     return new Promise((resolve, reject) => {
       this.sync_client
-        .post('/sync', qs.stringify({ token: this.token, commands: JSON.stringify(commands) }))
+        .post('/sync', qs.stringify({
+          token: this.token,
+          commands: JSON.stringify(commands),
+          resource_types: SYNCED_RESOURCE_TYPES,
+          sync_token: syncToken,
+        }))
         .then((response) => {
           resolve(response.data);
         })

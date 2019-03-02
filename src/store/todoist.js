@@ -102,6 +102,8 @@ const todoistModule = {
   getters: {
     oAuthToken: (state) => state.credentials.oAuthToken,
 
+    syncToken: (state) => state.syncToken,
+
     getPriorityColor: () => (priority) => PRIORITY_COLORS[priority],
 
     getProjectById: (state) => (id) => state.data.projects[id],
@@ -130,9 +132,19 @@ const todoistModule = {
     setTodoistData: (
       state,
       {
-        user, projects: projectsData, labels: labelsData, items: itemsData,
+        user,
+        projects: projectsData,
+        labels: labelsData,
+        items: itemsData,
+        fullSync,
       },
     ) => {
+      if (!fullSync) {
+        projectsData = _.assign(state.data.projects, _.keyBy(projectsData, 'id'));
+        itemsData = _.assign(state.data.items, _.keyBy(itemsData, 'id'));
+        labelsData = _.assign(state.data.labels, _.keyBy(labelsData, 'id'));
+      }
+
       const projects = _.chain(projectsData)
         .filter((item) => !_.some([item.is_archived, item.is_deleted]))
         .keyBy('id')
@@ -158,44 +170,12 @@ const todoistModule = {
   },
 
   actions: {
-    async login({ commit }, token) {
+    async login({ commit, dispatch }, token) {
       const service = new TodoistService(token);
       try {
         const response = await service.initialSync();
         commit('setOAuthToken', token);
-        commit('setSyncToken', response.data.sync_token);
-        commit('setTodoistData', {
-          user: response.data.user,
-          projects: response.data.projects,
-          labels: response.data.labels,
-          items: response.data.items,
-        });
-      } catch (err) {
-        Promise.reject(err);
-      }
-    },
-
-    // @TODO: deprecate
-    async updateItemDate({ commit, getters }, { id, dueDateUtc = null, dateString = null }) {
-      const service = new TodoistService(getters.oAuthToken);
-      const commandUuid = uid();
-      const command = {
-        type: 'item_update',
-        args: {
-          id,
-          due_date_utc: dueDateUtc,
-          date_string: dateString,
-        },
-        uuid: commandUuid,
-      };
-
-      try {
-        const response = await service.doSync([command]);
-        commit('setSyncToken', response.sync_token);
-
-        if (response.sync_status[commandUuid] !== 'ok') {
-          Promise.reject(response.sync_status[commandUuid]);
-        }
+        dispatch('handleResponse', response);
       } catch (err) {
         Promise.reject(err);
       }
@@ -211,7 +191,7 @@ const todoistModule = {
      *  - date_string
      *  - read docs - https://developer.todoist.com/sync/v7/#update-an-item
      */
-    async updateItem({ commit, getters }, taskArgs) {
+    async updateItem({ dispatch, getters }, taskArgs) {
       const service = new TodoistService(getters.oAuthToken);
       const commandUuid = uid();
       const command = {
@@ -223,8 +203,9 @@ const todoistModule = {
       };
 
       try {
-        const response = await service.doSync([command]);
-        commit('setSyncToken', response.sync_token);
+        const response = await service.doSync(getters.syncToken, [command]);
+
+        dispatch('handleResponse', response);
 
         if (response.sync_status[commandUuid] !== 'ok') {
           Promise.reject(response.sync_status[commandUuid]);
@@ -234,9 +215,21 @@ const todoistModule = {
       }
     },
 
-    async getItem({ getters }, id) {
+    async readSync({ dispatch, getters }) {
       const service = new TodoistService(getters.oAuthToken);
-      return service.getTask(id);
+      const response = await service.readSync(getters.syncToken);
+      dispatch('handleResponse', response);
+    },
+
+    handleResponse({ commit }, response) {
+      commit('setSyncToken', response.sync_token);
+      commit('setTodoistData', {
+        user: response.user,
+        projects: response.projects,
+        labels: response.labels,
+        items: response.items,
+        fullSync: response.full_sync,
+      });
     },
 
     async closeItem({ getters }, id) {

@@ -3,7 +3,7 @@
     <template v-if="hasItems">
       <q-list>
         <task-card
-          v-for="(task, id) in tasks"
+          v-for="(task, id) in items"
           :task="task"
           :key="id"
         >
@@ -36,11 +36,22 @@ export default {
   props: {
     filter: String,
   },
+  data () {
+    return {
+      filteredIds: [],
+    };
+  },
   computed: {
     ...mapTodoistGetters(['oAuthToken', 'getItemById']),
     ...mapFiltersState(['tasks']),
     hasItems() {
       return _.size(this.tasks);
+    },
+    items() {
+      return _.reduce(this.filteredIds, (obj, id) => {
+        obj[id] = this.getItemById(id);
+        return obj;
+      }, {});
     },
   },
   methods: {
@@ -51,6 +62,8 @@ export default {
     await this.$store.dispatch('todoist/login', getToken());
     const service = new TodoistService(this.oAuthToken);
     const tasks = await service.getTasksByFilter(this.filter);
+    this.filteredIds = _.map(tasks, (task) => task.id);
+
     this.setTasks(_.reduce(tasks, (obj, item) => {
       obj[item.id] = this.getItemById(item.id);
       return obj;
