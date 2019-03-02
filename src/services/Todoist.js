@@ -17,28 +17,6 @@ export default class TodoistService {
     });
   }
 
-  async initialSync() {
-    return this.sync_client.post(
-      '/sync',
-      qs.stringify({
-        token: this.token,
-        sync_token: '*',
-        resource_types: SYNCED_RESOURCE_TYPES,
-      }),
-    );
-  }
-
-  async readSync(syncToken) {
-    return this.sync_client.post(
-      '/sync',
-      qs.stringify({
-        token: this.token,
-        sync_token: syncToken,
-        resource_types: SYNCED_RESOURCE_TYPES,
-      }),
-    );
-  }
-
   async getTask(id) {
     return new Promise((resolve, reject) => {
       this.rest_client
@@ -72,15 +50,20 @@ export default class TodoistService {
     });
   }
 
-  async doSync(syncToken, commands) {
+  async sync(syncToken, commands = []) {
+    const payload = {
+      token: this.token,
+      resource_types: SYNCED_RESOURCE_TYPES,
+      sync_token: syncToken,
+    };
+
+    if (commands.length) {
+      payload.commands = JSON.stringify(commands);
+    }
+
     return new Promise((resolve, reject) => {
       this.sync_client
-        .post('/sync', qs.stringify({
-          token: this.token,
-          commands: JSON.stringify(commands),
-          resource_types: SYNCED_RESOURCE_TYPES,
-          sync_token: syncToken,
-        }))
+        .post('/sync', qs.stringify(payload))
         .then((response) => {
           resolve(response.data);
         })

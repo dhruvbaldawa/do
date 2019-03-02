@@ -112,8 +112,9 @@ const todoistModule = {
 
     getItemById: (state) => (id) => state.data.items[id],
 
-    getLabelByName: (state) => (name) => _.values(state.data.labels)
-      .find((label) => label.name === name),
+    getLabelByName: (state) => (name) => {
+      return _.values(state.data.labels).find((label) => label.name === name);
+    },
 
     getLabelColor: () => (id) => LABEL_COLORS[id],
 
@@ -131,13 +132,7 @@ const todoistModule = {
 
     setTodoistData: (
       state,
-      {
-        user,
-        projects: projectsData,
-        labels: labelsData,
-        items: itemsData,
-        fullSync,
-      },
+      { user, projects: projectsData, labels: labelsData, items: itemsData, fullSync },
     ) => {
       if (!fullSync) {
         projectsData = _.assign(state.data.projects, _.keyBy(projectsData, 'id'));
@@ -173,7 +168,7 @@ const todoistModule = {
     async login({ commit, dispatch }, token) {
       const service = new TodoistService(token);
       try {
-        const response = await service.initialSync();
+        const response = await service.sync('*');
         commit('setOAuthToken', token);
         dispatch('handleResponse', response);
       } catch (err) {
@@ -203,7 +198,7 @@ const todoistModule = {
       };
 
       try {
-        const response = await service.doSync(getters.syncToken, [command]);
+        const response = await service.sync(getters.syncToken, [command]);
 
         dispatch('handleResponse', response);
 
@@ -215,9 +210,9 @@ const todoistModule = {
       }
     },
 
-    async readSync({ dispatch, getters }) {
+    async sync({ dispatch, getters }) {
       const service = new TodoistService(getters.oAuthToken);
-      const response = await service.readSync(getters.syncToken);
+      const response = await service.sync(getters.syncToken);
       dispatch('handleResponse', response);
     },
 
