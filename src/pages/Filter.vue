@@ -26,7 +26,7 @@ export default {
     TaskCard,
   },
   props: {
-    filter: String,
+    filter: Function,
   },
   data() {
     return {
@@ -39,7 +39,7 @@ export default {
       return _.size(this.filteredItems);
     },
     filteredItems() {
-      return this.items;
+      return _.filter(this.items, this.filter);
     },
   },
 
