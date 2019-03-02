@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "array-to-tree": "^3.3.0",
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",

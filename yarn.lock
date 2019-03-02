@@ -1464,6 +1464,14 @@ array-flatten@^2.1.0:
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-2.1.2.tgz#24ef80a28c1a893617e2149b0c6d0d788293b099"
   integrity sha512-hNfzcOV8W4NdualtqBFPyVO+54DSJuZGY9qT4pRroB6S9e3iiido2ISIC5h9R2sPJ8H3FHCIiEnsv1lPXO3KtQ==
 
+array-to-tree@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/array-to-tree/-/array-to-tree-3.3.0.tgz#2894c1b7167197a3e0557b0e3307387dbf027b14"
+  integrity sha512-Lpz5H8jMZxIDNDGV0BiIBdnRZnZuipgvKBaUQ3FS8WZZ6uUg4ieJ9oDH7J3kjuab0XT27vsGhEOuh7mVO03UEQ==
+  dependencies:
+    lodash.keyby "^4.6.0"
+    nested-property "^0.0.7"
+
 array-union@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"
@@ -6802,6 +6810,11 @@ lodash.kebabcase@^4.1.1:
   resolved "https://registry.yarnpkg.com/lodash.kebabcase/-/lodash.kebabcase-4.1.1.tgz#8489b1cb0d29ff88195cceca448ff6d6cc295c36"
   integrity sha1-hImxyw0p/4gZXM7KRI/21swpXDY=
 
+lodash.keyby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.keyby/-/lodash.keyby-4.6.0.tgz#7f6a1abda93fd24e22728a4d361ed8bcba5a4354"
+  integrity sha1-f2oavak/0k4icopNNh7YvLpaQ1Q=
+
 lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -7361,6 +7374,11 @@ neo-async@^2.5.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.0.tgz#b9d15e4d71c6762908654b5183ed38b753340835"
   integrity sha512-MFh0d/Wa7vkKO3Y3LlacqAEeHK0mckVqzDieUKTT+KGxi+zIpeVsFxymkIiRpbpDziHc290Xr9A1O4Om7otoRA==
+
+nested-property@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/nested-property/-/nested-property-0.0.7.tgz#ff222f233ca8793c6828b4117091bea597130f4f"
+  integrity sha1-/yIvIzyoeTxoKLQRcJG+pZcTD08=
 
 netmask@^1.0.6:
   version "1.0.6"

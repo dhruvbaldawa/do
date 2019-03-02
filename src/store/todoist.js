@@ -66,6 +66,8 @@ const todoistModule = {
   },
 
   getters: {
+    data: (state) => state.data,
+
     items: (state) => state.data.items,
 
     oAuthToken: (state) => state.credentials.oAuthToken,

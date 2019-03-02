@@ -15,15 +15,15 @@
           toggle-color="blue-grey-3"
           toggle-text-color="pink"
           :options="[
-              { value: 4, textColor: 'priority-4', icon: 'flag' },
-              { value: 3, textColor: 'priority-3', icon: 'flag' },
-              { value: 2, textColor: 'priority-2', icon: 'flag' },
-              { value: 1, textColor: 'priority-1', icon: 'flag' },
-            ]"
+            { value: 4, textColor: 'priority-4', icon: 'flag' },
+            { value: 3, textColor: 'priority-3', icon: 'flag' },
+            { value: 2, textColor: 'priority-2', icon: 'flag' },
+            { value: 1, textColor: 'priority-1', icon: 'flag' },
+          ]"
         />
       </q-card-section>
 
-      <q-separator inset/>
+      <q-separator inset />
 
       <q-card-section align="center">
         <q-btn-toggle
@@ -32,10 +32,10 @@
           toggle-color="primary"
           @input="onChangeDueDate"
           :options="[
-              { value: 'today', label: 'today' },
-              { value: 'tomorrow', label: 'tomorrow' },
-              { value: 'friday', label: 'weekend' },
-            ]"
+            { value: 'today', label: 'today' },
+            { value: 'tomorrow', label: 'tomorrow' },
+            { value: 'friday', label: 'weekend' },
+          ]"
         />
       </q-card-section>
 
@@ -142,14 +142,14 @@ export default {
         case 'today':
           this.dueDate = moment()
             .utc()
-            .format('YYYY-MM-DDT00:00');
+            .format('YYYY-MM-DD');
           break;
 
         case 'tomorrow':
           this.dueDate = moment()
             .add(1, 'd')
             .utc()
-            .format('YYYY-MM-DDT00:00');
+            .format('YYYY-MM-DD');
           break;
 
         case 'friday':
@@ -157,7 +157,7 @@ export default {
             .endOf('week')
             .subtract(1, 'd')
             .utc()
-            .format('YYYY-MM-DDT00:00');
+            .format('YYYY-MM-DD');
           break;
 
         default:
@@ -198,10 +198,11 @@ export default {
       };
 
       if (this.dueDate !== null) {
-        payload.due_date_utc = this.dueDate;
-        payload.date_string = this.activeTask.due.date_string
-          ? this.activeTask.due.date_string
-          : null;
+        payload.due = {
+          date: this.dueDate,
+          string:
+            this.activeTask.due && this.activeTask.due.string ? this.activeTask.due.string : null,
+        };
       }
 
       this.$emit('save', payload);

@@ -15,7 +15,6 @@ import _ from 'lodash';
 
 import { createNamespacedHelpers } from 'vuex';
 import { getToken } from '../services/TokenAuth.js';
-// import TodoistService from '../services/Todoist.js';
 import TaskCard from '../components/TaskCard';
 
 const { mapGetters: mapTodoistGetters } = createNamespacedHelpers('todoist');
@@ -34,12 +33,13 @@ export default {
     };
   },
   computed: {
-    ...mapTodoistGetters(['oAuthToken', 'getItemById', 'items']),
+    ...mapTodoistGetters(['oAuthToken', 'getItemById', 'items', 'data']),
     hasItems() {
       return _.size(this.filteredItems);
     },
     filteredItems() {
-      return _.filter(this.items, this.filter);
+      const filterFn = this.filter(this.data);
+      return _.filter(this.items, filterFn);
     },
   },
 
