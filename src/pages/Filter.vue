@@ -2,7 +2,7 @@
   <q-page>
     <template v-if="hasItems">
       <q-list>
-        <task-card v-for="(task, id) in filteredItems" :task="task" :key="id"> </task-card>
+        <task-card v-for="task in filteredItems" :task="task" :key="task.id"> </task-card>
       </q-list>
     </template>
   </q-page>
@@ -25,7 +25,11 @@ export default {
     TaskCard,
   },
   props: {
-    filter: Function,
+    filter: {
+      type: Function,
+      required: true,
+    },
+    sort: [Function, Array],
   },
   data() {
     return {
@@ -39,7 +43,10 @@ export default {
     },
     filteredItems() {
       const filterFn = this.filter(this.data);
-      return _.filter(this.items, filterFn);
+      return _.chain(this.items)
+        .filter(filterFn)
+        .sortBy(this.sort)
+        .values();
     },
   },
 

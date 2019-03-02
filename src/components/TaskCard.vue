@@ -94,7 +94,12 @@ export default {
 
       const datetime = this.task.due.datetime || this.task.due.date;
       return moment(datetime).calendar(null, {
-        sameDay: 'LT',
+        sameDay() {
+          if (this.hours() === 0 && this.minutes() === 0) {
+            return '[today]';
+          }
+          return 'LT';
+        },
         nextDay: '[Tom. @]LT',
         nextWeek: 'dddd[@]LT',
         lastDay: "[Y'day@]LT",

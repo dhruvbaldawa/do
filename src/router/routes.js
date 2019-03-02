@@ -1,5 +1,7 @@
+import moment from 'moment';
+
 import { isLoggedIn } from '../services/TokenAuth';
-import { inProject } from '../helpers/todoistFilters';
+import { overdueOrToday } from '../helpers/todoistFilters';
 
 function requireLogin(to, from, next) {
   if (!isLoggedIn()) {
@@ -16,8 +18,10 @@ const routes = [
       {
         path: '',
         component: () => import('pages/Filter.vue'),
-        props: { filter: inProject('Test') },
-        // props: { filter: 'overdue|today' },
+        props: {
+          filter: overdueOrToday,
+          sort: [(item) => -item.priority, (item) => moment(item.due.date).unix()],
+        },
         beforeEnter: requireLogin,
       },
       {

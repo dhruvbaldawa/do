@@ -140,15 +140,12 @@ export default {
 
       switch (value) {
         case 'today':
-          this.dueDate = moment()
-            .utc()
-            .format('YYYY-MM-DD');
+          this.dueDate = moment().format('YYYY-MM-DD');
           break;
 
         case 'tomorrow':
           this.dueDate = moment()
             .add(1, 'd')
-            .utc()
             .format('YYYY-MM-DD');
           break;
 
@@ -156,7 +153,6 @@ export default {
           this.dueDate = moment()
             .endOf('week')
             .subtract(1, 'd')
-            .utc()
             .format('YYYY-MM-DD');
           break;
 
