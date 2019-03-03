@@ -21,6 +21,7 @@ const routes = [
         props: {
           filter: overdueOrToday,
           sort: [(item) => -item.priority, (item) => moment(item.due.date).unix()],
+          title: 'Overdue or Today',
         },
         beforeEnter: requireLogin,
       },

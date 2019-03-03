@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-item clickable v-ripple @click="showDialog()" class="q-pa-none">
-      <q-slide-item @left="markDone" class="full-width">
+      <q-slide-item @left="markDone" @right="showScheduleDialog" class="full-width">
         <template v-slot:left>
           <q-icon name="done" />
         </template>
@@ -45,6 +45,7 @@
     </q-item>
     <q-separator></q-separator>
     <task-dialog :task="task" :show="dialog" @close="closeDialog" @save="saveDialog" />
+    <schedule-dialog :task="task" :show="scheduleDialog" @close="closeScheduleDialog" />
   </div>
 </template>
 
@@ -52,6 +53,7 @@
 import { createNamespacedHelpers } from 'vuex';
 import moment from 'moment';
 import TaskDialog from './TaskDialog';
+import ScheduleDialog from './ScheduleDialog';
 
 const { mapGetters: mapTodoistGetters, mapActions: mapTodoistActions } = createNamespacedHelpers(
   'todoist',
@@ -61,10 +63,12 @@ export default {
   name: 'TaskCard',
   components: {
     TaskDialog,
+    ScheduleDialog,
   },
   data() {
     return {
       dialog: false,
+      scheduleDialog: false,
     };
   },
   props: {
@@ -117,6 +121,15 @@ export default {
 
     closeDialog() {
       this.dialog = false;
+    },
+
+    showScheduleDialog(details) {
+      this.scheduleDialog = true;
+      details.reset();
+    },
+
+    closeScheduleDialog() {
+      this.scheduleDialog = false;
     },
 
     async saveDialog(taskArgs) {

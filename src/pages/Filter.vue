@@ -2,8 +2,15 @@
   <q-page>
     <template v-if="hasItems">
       <q-list>
+        <template v-if="title">
+          <q-item-label header class="text-h6">{{ this.title }}</q-item-label>
+          <q-separator />
+        </template>
         <task-card v-for="task in filteredItems" :task="task" :key="task.id"> </task-card>
       </q-list>
+    </template>
+    <template v-else>
+      <h5>No tasks</h5>
     </template>
   </q-page>
 </template>
@@ -30,6 +37,7 @@ export default {
       required: true,
     },
     sort: [Function, Array],
+    title: String,
   },
   data() {
     return {
